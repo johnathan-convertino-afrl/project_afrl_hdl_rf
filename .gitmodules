@@ -1,9 +1,6 @@
 [submodule "hdl/projects/fmcomms5"]
 	path = hdl/projects/fmcomms5
 	url = https://github.com/johnathan-convertino-afrl/fmcomms5.git
-[submodule "hdl/projects/fmcomms2"]
-	path = hdl/projects/fmcomms2
-	url = https://github.com/johnathan-convertino-afrl/fmcomms2.git
 [submodule "hdl/ip/ad"]
 	path = hdl/ip/ad
 	url = https://github.com/johnathan-convertino-afrl/ad_hdl_fusesoc.git
@@ -19,3 +16,6 @@
 [submodule "sw/linux/buildroot-afrl"]
 	path = sw/linux/buildroot-afrl
 	url = https://github.com/johnathan-convertino-afrl/buildroot-afrl.git
+[submodule "hdl/projects/fmcomms2-3"]
+	path = hdl/projects/fmcomms2-3
+	url = https://github.com/johnathan-convertino-afrl/fmcomms2-3.git
