@@ -113,9 +113,14 @@ def main():
 def submodule_init():
   repo = git.Repo(os.getcwd())
 
+  logger.info("Checking submodules...")
+
   for submodule in repo.submodules:
     if not submodule.module_exists():
-      submodule.update(init=True)
+      logger.info("Updating submodule...")
+      logger.info("Submodule " + str(submodule.update(init=True)) + " pulled")
+
+  logger.info("Checking submodules complete")
 
 def open_yaml(file_name):
   try:
