@@ -1,0 +1,14 @@
+zed_fmcomms2-3_sdcard:
+  hdl:
+    fusesoc:
+      path: hdl/
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+  sw:
+    buildroot:
+      path: sw/linux/buildroot/
+      config: zed_ad_fmcomms2-3_defconfig
+  image:
+    genimage:
+      path: cfg/
+      config: zed_sdcard_linux.img
