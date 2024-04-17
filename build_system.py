@@ -95,8 +95,6 @@ logger = logging.getLogger(__name__)
 def main():
   args = parse_args(sys.argv[1:])
 
-  submodule_init()
-
   if args.clean:
     exit(clean())
 
@@ -110,11 +108,13 @@ def main():
 
   logger_setup()
 
+  submodule_init()
+
 def submodule_init():
   repo = git.Repo(os.getcwd())
 
   for submodule in repo.submodules:
-    if not submodule.exists():
+    if not submodule.module_exists():
       submodule.update(init=True)
 
 def open_yaml(file_name):
