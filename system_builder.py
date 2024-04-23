@@ -48,6 +48,8 @@ sys.path.append("./builder/")
 
 logger = logging.getLogger()
 
+sys.dont_write_bytecode = True
+
 import builder
 
 # main execution function
@@ -119,24 +121,17 @@ def list_projects(yaml, file_name):
 # Clean up folders used for output (output and log)
 def clean():
   print("********************************")
-  print("** CLEANING UNTRACKED FOLDERS")
+  print("** CLEANING UNTRACKED ITEMS")
 
   repo = git.Repo(os.getcwd())
 
-  print(set(list(repo.git.ls_files().split('\n'))) ^ set(os.listdir()))
-  print(os.listdir())
-
-  # if os.path.isdir(os.getcwd() + "/log"):
-  #   print("*** REMOVE FOLDER: log")
-  #   shutil.rmtree(os.getcwd() + "/log")
-  #
-  # if os.path.isdir(os.getcwd() + "/output"):
-  #   print("*** REMOVE FOLDER: output")
-  #   shutil.rmtree(os.getcwd() + "/output")
-  #
-  # if os.path.isdir(os.getcwd() + "/output"):
-  #   print("*** REMOVE FOLDER: output")
-  #   shutil.rmtree(os.getcwd() + "/output")
+  for item in repo.ignored(os.listdir()):
+    if os.path.isfile(item):
+      print(f"** REMOVING FILE: {item}")
+      os.remove(item)
+    else:
+      print(f"** REMOVING DIR: {item}")
+      shutil.rmtree(item, ignore_errors=True)
 
   print("** CLEANING COMPLETE")
   print("********************************")
