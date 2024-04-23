@@ -38,3 +38,13 @@ license: MIT
 ## USAGE
 ### General Usage
 
+  copy:
+    last: true
+    tool: cp
+    from: sw/linux/buildroot-afrl/output/images
+    to:   output/
+  image:
+    last: true
+    tool: genimage
+    path: cfg/
+    config: zed_sdcard_linux.img
