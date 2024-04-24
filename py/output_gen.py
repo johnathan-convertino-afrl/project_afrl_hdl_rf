@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 ################################################################################
-# @file   output_builder.py
+# @file   output_gen.py
 # @author Jay Convertino(johnathan.convertino.1@us.af.mil)
 # @date   2024.04.24
 # @brief  parse yaml file to execute built in tools

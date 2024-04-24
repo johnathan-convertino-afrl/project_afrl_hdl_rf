@@ -53,7 +53,7 @@ class bob:
   # run the steps to build parts of targets
   def run(self):
     self._process()
-    # self._execute()
+    self._execute()
 
   def list(self):
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
@@ -69,8 +69,8 @@ class bob:
 
       print(f"COMMAND: {tool:<16} OPTIONS: {' '.join(filter_options)}")
 
-  # create dict of dicts that contains lists with lists of strings to execute with subprocess
-  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], ['thread':["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequenctial': [[]]}}
+  # create dict of dicts that contains lists with lists of lists to execute with subprocess
+  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
   def _process(self):
 
     #filter target into updated dictionary if it was selected
