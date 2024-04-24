@@ -2,7 +2,7 @@
 ################################################################################
 # @file   builder.py
 # @author Jay Convertino(johnathan.convertino.1@us.af.mil)
-# @date   24.04.22
+# @date   2024.04.22
 # @brief  parse yaml file to execute build tools
 #
 # @license MIT
@@ -43,8 +43,10 @@ class bob:
     self._target = target
     # template strings for commands
     self._command_template = {
-      'fusesoc':   { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
-      'buildroot': { 'cmd 1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]}
+      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
+      'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
+      'copy':       { 'cmd_1' : ["cp", "{source}", "{destination}"]},
+      'genimage':   { 'cmd_1' : ["genimage", "{path}", "{config}"]}
     }
     self._projects = None
     self._threads  = []
@@ -55,8 +57,18 @@ class bob:
     self._execute()
     self._package()
 
+  def list(self):
+    print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
+    for tool, commands in self._command_template.items():
+      options = []
+      for command, method in commands.items():
+        options.extend([word for word in method if word.endswith('}')])
+
+      filter_options = list(set(options))
+      print(f"COMMAND: {tool:<16} OPTIONS: {' '.join(filter_options)}")
+
   # create dict of lists with lists of strings to execute with subprocess
-  # {project: [[["make", "def_config"], ["make"]], ['thread':["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]]}
+  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], ['thread':["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequenctial': [[]]}}
   def _process(self):
 
     #filter target into updated dictionary if it was selected
@@ -70,28 +82,32 @@ class bob:
     self._projects = {}
 
     for project, parts in self._yaml_data.items():
-      project_parts = []
+      project_run_type = {}
 
-      for part, command in parts.items():
+      for run_type, part in parts.items():
+        project_parts = []
 
-        try:
-          command_template = self._command_template[part].values()
-        except KeyError:
-          logger.info(f"No build rule for part: {part}.")
-          continue
+        for part, command in part.items():
+          try:
+            command_template = self._command_template[part].values()
+          except KeyError:
+            logger.info(f"No build rule for part: {part}.")
+            continue
 
-        part_commands = []
+          part_commands = []
 
-        for commands in command_template:
-          populate_command = []
+          for commands in command_template:
+            populate_command = []
 
-          string_command = ' '.join(commands)
+            string_command = ' '.join(commands)
 
-          part_commands.append(list(string_command.format_map(command).split(" ")))
+            part_commands.append(list(string_command.format_map(command).split(" ")))
 
-        project_parts.append(part_commands)
+          project_parts.append(part_commands)
 
-      self._projects[project] = project_parts
+        project_run_type[run_type] = project_parts
+
+      self._projects[project] = project_run_type
 
       logger.info(f"Added commands for project: {project}")
 
@@ -101,20 +117,28 @@ class bob:
   #iterate over projects avaiable and execute commands per project
   def _execute(self):
 
-    for project, commands in self._projects.items():
+    for project, run_types in self._projects.items():
       logger.info(f"Starting build for project: {project}")
 
       self._threads.clear()
 
-      for command_list in commands:
-        thread = threading.Thread(target=self._subprocess, name=project, args=[command_list])
+      for run_type, commands in run_types.items():
+        if run_type == 'concurrent':
+          for command_list in commands:
+            logger.debug("CONCURRENT: " + str(command_list))
+            thread = threading.Thread(target=self._subprocess, name=project, args=[command_list])
 
-        self._threads.append(thread)
+            self._threads.append(thread)
 
-        thread.start()
+            thread.start()
 
-      for t in self._threads:
-        t.join()
+          for t in self._threads:
+            t.join()
+
+        if run_type == 'sequential':
+          for command_list in commands:
+            logger.debug("SEQUENTIAL: " + str(command_list))
+            self._subprocess(command_list)
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:

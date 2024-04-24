@@ -2,8 +2,8 @@
 ################################################################################
 # @file   system_builder.py
 # @author Jay Convertino(johnathan.convertino.1@us.af.mil)
-# @date   24.04.17
-# @brief  parse yaml file to execute built in tools
+# @date   2024.04.17
+# @brief  Build various projects using builder object to parse and execute parts
 #
 # @license MIT
 # Copyright 2024 Jay Convertino
@@ -64,6 +64,9 @@ def main():
   if yaml_data is None:
     exit(~0)
 
+  if args.list_cmds:
+    exit(builder.bob(yaml_data, args.target).list())
+
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
 
@@ -109,12 +112,10 @@ def list_projects(yaml, file_name):
   if not len(yaml):
     return ~0
 
-  print('\n' + f"BUILD SYSTEM TARGETS FROM {file_name.upper()}" + '\n')
+  print('\n' + f"SYSTEM BUILDER TARGETS FROM {file_name.upper()}" + '\n')
 
   for target, value in yaml.items():
     print(f"TARGET: {target}")
-    for part, tool in value.items():
-      print('\t' + f"PART: {part:<16} TOOL: {str(tool['tool']):<16}")
 
   return 0
 
@@ -144,8 +145,9 @@ def parse_args(argv):
 
   group = parser.add_mutually_exclusive_group()
 
-  group.add_argument('--list',    action='store_true',  default=False,        dest='list_all',    required=False, help='List all targets.')
-  group.add_argument('--clean',   action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
+  group.add_argument('--list_targets',    action='store_true',  default=False,        dest='list_all',    required=False, help='List all targets.')
+  group.add_argument('--list_commands',   action='store_true',  default=False,        dest='list_cmds',   required=False, help='List all available yaml build commands.')
+  group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
   parser.add_argument('--deps',   action='store',       default="deps.yml",   dest='deps_files',  required=False, help='Path to dependecys file, used to check if command line applications exist.')
   parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')

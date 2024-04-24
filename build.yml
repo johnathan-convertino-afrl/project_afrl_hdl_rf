@@ -1,23 +1,38 @@
 zed_fmcomms2-3_linux_busybox_sdcard:
-  fusesoc: &fusesoc_fmcomms2-3
-    config: hdl/fusesoc.conf
-    path: hdl/
-    project: AFRL:project:fmcomms2-3:1.0.0
-    target: zed_bootgen
-  buildroot: &buildroot_fmcomms2-3
-    path: sw/linux/buildroot-afrl/
-    config: zynq_zed_ad_fmcomms2-3_defconfig
+  concurrent:
+    fusesoc: &fusesoc_fmcomms2-3
+      config: hdl/fusesoc.conf
+      path: hdl/
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+    buildroot: &buildroot_fmcomms2-3
+      path: sw/linux/buildroot-afrl/
+      config: zynq_zed_ad_fmcomms2-3_defconfig
+  sequential:
+    make_project_dir:
+      destination: output/
+    copy_bootfs_to_project_dir:
+      source: build/AFRL_project_fmcomms2-3_1.0.0/zed_bootgen-vivado/BOOTFS/
+      destination: output/
+    copy_rootfs_to_project_dir:
+      source:
+      destination: output/
+    genimage_in_project_dir:
+      destination: output/
+      config: path/zed_fmcomms2-3_linux_image.cfg
 zc702_fmcomms2-3_linux_busybox_sdcard:
-  fusesoc:
-    <<: *fusesoc_fmcomms2-3
-    target: zc702_bootgen
-  buildroot:
-    <<: *buildroot_fmcomms2-3
-    config: zynq_zc702_ad_fmcomms2-3_defconfig
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zc702_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynq_zc702_ad_fmcomms2-3_defconfig
 zc706_fmcomms2-3_linux_busybox_sdcard:
-  fusesoc:
-    <<: *fusesoc_fmcomms2-3
-    target: zc706_bootgen
-  buildroot:
-    <<: *buildroot_fmcomms2-3
-    config: zynq_zc706_ad_fmcomms2-3_defconfig
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zc706_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynq_zc706_ad_fmcomms2-3_defconfig
