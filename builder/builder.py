@@ -124,10 +124,11 @@ class bob:
         logger.info(f"Executing command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
       except subprocess.CalledProcessError as error_code:
-        logger.error(error_code.returncode, error_code.output)
-        for t in self._threads:
-          if t.is_alive():
-            t.raise_exception()
+        logger.error(error_code.returncode)
+
+        # for t in self._threads:
+        #   if t.is_alive():
+        #     t.raise_exception()
         return ~0
 
       logger.info(f"Completed command: {' '.join(command)}")
