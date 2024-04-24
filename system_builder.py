@@ -161,10 +161,10 @@ def logger_setup():
 
   os.makedirs(os.getcwd() + "/log", exist_ok=True)
 
-  logger.setLevel(logging.INFO)
+  logger.setLevel(logging.DEBUG)
 
   log_file = logging.FileHandler(filename = log_name, mode = 'w', delay=True)
-  log_file.setLevel(logging.INFO)
+  log_file.setLevel(logging.DEBUG)
   format_file = logging.Formatter(fmt = '%(asctime)-12s : %(levelname)-8s : %(message)s', datefmt='%y.%m.%d %H:%M')
   log_file.setFormatter(format_file)
 

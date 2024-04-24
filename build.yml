@@ -9,7 +9,7 @@ zed_fmcomms2-3_linux_busybox_sdcard:
       path: sw/linux/buildroot-afrl/
       config: zynq_zed_ad_fmcomms2-3_defconfig
   sequential:
-    script:
+    script: &output_files_fmcomms2-3
       exec: python
       file: py/output_gen.py
       args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zed_bootgen-vivado/BOOTFS --dest output"
@@ -21,6 +21,10 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
     buildroot:
       <<: *buildroot_fmcomms2-3
       config: zynq_zc702_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zc702_bootgen-vivado/BOOTFS --dest output"
 zc706_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
     fusesoc:
@@ -29,3 +33,7 @@ zc706_fmcomms2-3_linux_busybox_sdcard:
     buildroot:
       <<: *buildroot_fmcomms2-3
       config: zynq_zc706_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zc706_bootgen-vivado/BOOTFS --dest output"
