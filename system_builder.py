@@ -37,6 +37,8 @@ import argparse
 import logging
 import time
 
+logger = logging.getLogger()
+
 # check for git
 try:
   import git
@@ -44,9 +46,7 @@ except ImportError:
   print("REQUIREMENT MISSING: gitpython, pip install gitpython")
   exit(0)
 
-sys.path.append("./builder/")
-
-logger = logging.getLogger()
+sys.path.append("./py/")
 
 sys.dont_write_bytecode = True
 
@@ -82,14 +82,14 @@ def main():
 def submodule_init():
   repo = git.Repo(os.getcwd())
 
-  logger.info("Checking submodules...")
+  logger.info("Checking for submodules...")
 
   for submodule in repo.submodules:
     if not submodule.module_exists():
       logger.info("Updating submodule...")
       logger.info("Submodule " + str(submodule.update(init=True)) + " pulled")
 
-  logger.info("Checking submodules complete")
+  logger.info("Checking for submodules complete.")
 
 # open the yaml file for processing
 def open_yaml(file_name):

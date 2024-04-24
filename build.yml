@@ -9,17 +9,10 @@ zed_fmcomms2-3_linux_busybox_sdcard:
       path: sw/linux/buildroot-afrl/
       config: zynq_zed_ad_fmcomms2-3_defconfig
   sequential:
-    make_project_dir:
-      destination: output/
-    copy_bootfs_to_project_dir:
-      source: build/AFRL_project_fmcomms2-3_1.0.0/zed_bootgen-vivado/BOOTFS/
-      destination: output/
-    copy_rootfs_to_project_dir:
-      source:
-      destination: output/
-    genimage_in_project_dir:
-      destination: output/
-      config: path/zed_fmcomms2-3_linux_image.cfg
+    script:
+      exec: python
+      file: py/output_gen.py
+      args: ["--dest output/zed_fmcomms2-3_linux_busybox_sdcard zed--rootfs sw/linux/buildroot-afrl/output/images/", "--bootfs build/AFRL_project_fmcomms2-3_1.0.0/zed_bootgen-vivado/BOOTFS"]
 zc702_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
     fusesoc:

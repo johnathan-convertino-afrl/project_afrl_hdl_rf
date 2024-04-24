@@ -45,8 +45,7 @@ class bob:
     self._command_template = {
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
-      'copy':       { 'cmd_1' : ["cp", "{source}", "{destination}"]},
-      'genimage':   { 'cmd_1' : ["genimage", "{path}", "{config}"]}
+      'script':     { 'cmd_1' : ["{exec}", "{file}", "{project_name}", "{args}"]}
     }
     self._projects = None
     self._threads  = []
@@ -54,8 +53,7 @@ class bob:
   # run the steps to build parts of targets
   def run(self):
     self._process()
-    self._execute()
-    self._package()
+    # self._execute()
 
   def list(self):
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
@@ -64,10 +62,10 @@ class bob:
       for command, method in commands.items():
         options.extend([word for word in method if word.endswith('}')])
 
-      filter_options = list(set(options))
+      filter_options = list(set(options)).remove("{project_name}")
       print(f"COMMAND: {tool:<16} OPTIONS: {' '.join(filter_options)}")
 
-  # create dict of lists with lists of strings to execute with subprocess
+  # create dict of dicts that contains lists with lists of strings to execute with subprocess
   # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], ['thread':["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequenctial': [[]]}}
   def _process(self):
 
@@ -101,7 +99,13 @@ class bob:
 
             string_command = ' '.join(commands)
 
+            if commands.count("{project_name}"):
+              part_commands.append(project)
+
             part_commands.append(list(string_command.format_map(command).split(" ")))
+
+            print(part_commands)
+
 
           project_parts.append(part_commands)
 
@@ -116,6 +120,9 @@ class bob:
   #call subprocess as a thread and add it to a list of threads for wait to check on.
   #iterate over projects avaiable and execute commands per project
   def _execute(self):
+    if self._projects == None:
+      logger.error("NO PROJECTS AVAILABLE FOR BUILDER")
+      return ~0
 
     for project, run_types in self._projects.items():
       logger.info(f"Starting build for project: {project}")
@@ -134,11 +141,12 @@ class bob:
 
           for t in self._threads:
             t.join()
-
-        if run_type == 'sequential':
+        elif run_type == 'sequential':
           for command_list in commands:
             logger.debug("SEQUENTIAL: " + str(command_list))
             self._subprocess(command_list)
+        else:
+          logger.error(f"RUN_TYPE {run_type} is not a valid selection")
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
@@ -156,7 +164,3 @@ class bob:
         return ~0
 
       logger.info(f"Completed command: {' '.join(command)}")
-
-  #maybe a special method for image?
-  def _package(self):
-    pass
