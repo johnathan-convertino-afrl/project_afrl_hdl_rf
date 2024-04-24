@@ -45,7 +45,7 @@ class bob:
     self._command_template = {
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
-      'script':     { 'cmd_1' : ["{exec}", "{file}", "{project_name}", "{args}"]}
+      'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]}
     }
     self._projects = None
     self._threads  = []
@@ -62,7 +62,11 @@ class bob:
       for command, method in commands.items():
         options.extend([word for word in method if word.endswith('}')])
 
-      filter_options = list(set(options)).remove("{project_name}")
+      filter_options = list(set(options))
+
+      if filter_options.count("{_project_name}"):
+        filter_options.remove("{_project_name}")
+
       print(f"COMMAND: {tool:<16} OPTIONS: {' '.join(filter_options)}")
 
   # create dict of dicts that contains lists with lists of strings to execute with subprocess
@@ -92,6 +96,8 @@ class bob:
             logger.info(f"No build rule for part: {part}.")
             continue
 
+          command.update({'_project_name' : project})
+
           part_commands = []
 
           for commands in command_template:
@@ -99,13 +105,9 @@ class bob:
 
             string_command = ' '.join(commands)
 
-            if commands.count("{project_name}"):
-              part_commands.append(project)
+            list_command = list(string_command.format_map(command).split(" "))
 
-            part_commands.append(list(string_command.format_map(command).split(" ")))
-
-            print(part_commands)
-
+            part_commands.append(list_command)
 
           project_parts.append(part_commands)
 
