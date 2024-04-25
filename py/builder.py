@@ -45,7 +45,8 @@ class bob:
     self._command_template = {
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
-      'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]}
+      'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
+      'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}"]}
     }
     self._projects = None
     self._threads  = []
