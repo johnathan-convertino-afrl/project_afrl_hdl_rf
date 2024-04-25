@@ -126,7 +126,11 @@ def clean():
 
   repo = git.Repo(os.getcwd())
 
+  if len(repo.ignored(os.listdir())) == 0:
+    print("** NOTHING TO REMOVE")
+
   for item in repo.ignored(os.listdir()):
+    print(item)
     if os.path.isfile(item):
       print(f"** REMOVING FILE: {item}")
       os.remove(item)

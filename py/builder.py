@@ -65,10 +65,13 @@ class bob:
 
       filter_options = list(set(options))
 
-      if filter_options.count("{_project_name}"):
-        filter_options.remove("{_project_name}")
+      str_options = ' '.join(filter_options)
 
-      print(f"COMMAND: {tool:<16} OPTIONS: {' '.join(filter_options)}")
+      str_options = str_options.replace('{_project_name}', '')
+
+      str_options = str_options.replace('/', '')
+
+      print(f"COMMAND: {tool:<16} OPTIONS: {str_options}")
 
   # create dict of dicts that contains lists with lists of lists to execute with subprocess
   # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
