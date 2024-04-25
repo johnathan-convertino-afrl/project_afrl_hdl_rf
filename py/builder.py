@@ -46,7 +46,7 @@ class bob:
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
       'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
-      'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}"]}
+      'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
     }
     self._projects = None
     self._threads  = []
@@ -54,14 +54,14 @@ class bob:
   # run the steps to build parts of targets
   def run(self):
     self._process()
-    self._execute()
+    # self._execute()
 
   def list(self):
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
     for tool, commands in self._command_template.items():
       options = []
       for command, method in commands.items():
-        options.extend([word for word in method if word.endswith('}')])
+        options.extend([word for word in method if word.count('}')])
 
       filter_options = list(set(options))
 
@@ -70,6 +70,8 @@ class bob:
       str_options = str_options.replace('{_project_name}', '')
 
       str_options = str_options.replace('/', '')
+
+      str_options = str_options.replace('.cfg', '')
 
       print(f"COMMAND: {tool:<16} OPTIONS: {str_options}")
 
@@ -112,6 +114,8 @@ class bob:
             list_command = list(string_command.format_map(command).split(" "))
 
             part_commands.append(list_command)
+
+            logger.debug(part_commands)
 
           project_parts.append(part_commands)
 
