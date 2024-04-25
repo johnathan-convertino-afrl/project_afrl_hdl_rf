@@ -54,7 +54,7 @@ class bob:
   # run the steps to build parts of targets
   def run(self):
     self._process()
-    # self._execute()
+    self._execute()
 
   def list(self):
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
