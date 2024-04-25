@@ -130,7 +130,6 @@ def clean():
     print("** NOTHING TO REMOVE")
 
   for item in repo.ignored(os.listdir()):
-    print(item)
     if os.path.isfile(item):
       print(f"** REMOVING FILE: {item}")
       os.remove(item)
