@@ -59,6 +59,8 @@ def main():
   if args.clean:
     exit(clean())
 
+  logger_setup()
+
   yaml_data = open_yaml(args.config_file)
 
   if yaml_data is None:
@@ -70,24 +72,22 @@ def main():
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
 
-  logger_setup()
-
-  submodule_init()
+  submodule_init(os.getcwd())
 
   exit(builder.bob(yaml_data, args.target).run())
 
-  #image generation
-
 # make sure submodules have been pulled. If not, pull them.
-def submodule_init():
-  repo = git.Repo(os.getcwd())
+def submodule_init(repo):
+  repo = git.Repo(repo)
 
   logger.info("Checking for submodules...")
 
   for submodule in repo.submodules:
     if not submodule.module_exists():
-      logger.info("Updating submodule...")
+      logger.info("Updating submodule in path: " + submodule.abspath)
       logger.info("Submodule " + str(submodule.update(init=True)) + " pulled")
+      if len(submodule.children()):
+        submodule_init(submodule)
 
   logger.info("Checking for submodules complete.")
 
@@ -102,7 +102,9 @@ def open_yaml(file_name):
   try:
     yaml_data = yaml.safe_load(stream)
   except yaml.YAMLError as e:
-    logger.error("yaml issue, " + e)
+    logger.error("yaml issue")
+    for line in str(e).split("\n"):
+      logger.error(line)
     return None
 
   return yaml_data

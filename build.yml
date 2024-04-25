@@ -1,7 +1,6 @@
 zed_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
     fusesoc: &fusesoc_fmcomms2-3
-      config: hdl/fusesoc.conf
       path: hdl/
       project: AFRL:project:fmcomms2-3:1.0.0
       target: zed_bootgen
@@ -12,7 +11,7 @@ zed_fmcomms2-3_linux_busybox_sdcard:
     script: &output_files_fmcomms2-3
       exec: python
       file: py/output_gen.py
-      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zed_bootgen-vivado/BOOTFS --dest output"
+      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs hdl/output --dest output"
     genimage:
       path: img_cfg
 zc702_fmcomms2-3_linux_busybox_sdcard:
@@ -26,7 +25,6 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
   sequential:
     script:
       <<: *output_files_fmcomms2-3
-      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zc702_bootgen-vivado/BOOTFS --dest output"
     genimage:
       path: img_cfg
 zc706_fmcomms2-3_linux_busybox_sdcard:
@@ -40,6 +38,5 @@ zc706_fmcomms2-3_linux_busybox_sdcard:
   sequential:
     script:
       <<: *output_files_fmcomms2-3
-      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs build/AFRL_project_fmcomms2-3_1.0.0/zc706_bootgen-vivado/BOOTFS --dest output"
     genimage:
       path: img_cfg

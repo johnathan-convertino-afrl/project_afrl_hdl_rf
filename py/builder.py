@@ -34,6 +34,7 @@ import shutil
 import sys
 import logging
 import threading
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ class bob:
     self._target = target
     # template strings for commands
     self._command_template = {
-      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "--config", "{config}", "run", "--build", "--target", "{target}", "{project}"]},
+      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "{path}/output/{_project_name}", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
       'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
       'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
@@ -63,17 +64,15 @@ class bob:
       for command, method in commands.items():
         options.extend([word for word in method if word.count('}')])
 
-      filter_options = list(set(options))
-
-      str_options = ' '.join(filter_options)
+      str_options = ' '.join(options)
 
       str_options = str_options.replace('{_project_name}', '')
 
-      str_options = str_options.replace('/', '')
+      str_options = re.findall(r'\{(.*?)\}', str_options)
 
-      str_options = str_options.replace('.cfg', '')
+      filter_options = list(set(str_options))
 
-      print(f"COMMAND: {tool:<16} OPTIONS: {str_options}")
+      print(f"COMMAND: {tool:<16} OPTIONS: {filter_options}")
 
   # create dict of dicts that contains lists with lists of lists to execute with subprocess
   # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
@@ -151,6 +150,7 @@ class bob:
 
           for t in self._threads:
             t.join()
+
         elif run_type == 'sequential':
           for command_list in commands:
             logger.debug("SEQUENTIAL: " + str(command_list))
@@ -166,13 +166,18 @@ class bob:
         logger.info(f"Executing command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
       except subprocess.CalledProcessError as error_code:
-        logger.error(error_code.output)
+        logger.error(str(error_code))
 
-        # for t in self._threads:
-        #   if t.is_alive():
-        #     t.raise_exception()
+        for line in error_code.stderr.split('\n'):
+          if len(line):
+            logger.error(line)
+
+        # on error I should kill everything and end building
+
         return ~0
 
-      logger.debug(result.stdout)
+      for line in result.stdout.split('\n'):
+        if len(line):
+          logger.debug(line)
 
       logger.info(f"Completed command: {' '.join(command)}")

@@ -39,7 +39,7 @@ def main():
   filters = [r'\.dtb$', r'Image$']
 
   #copy bootfs to new location
-  src_bootfs_dir = os.getcwd() + '/' + args.bootfs
+  src_bootfs_dir = os.getcwd() + '/' + args.bootfs + "/" + args.project_name + "/" + "BOOTFS"
   dest_bootfs_dir =  os.getcwd() + '/' + args.dest + "/" + args.project_name + "/" + "bootfs"
 
   try:
