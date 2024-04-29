@@ -103,8 +103,8 @@ class bob:
             logger.info(f"No build rule for part: {part}.")
             continue
 
-
           command.update({'_pwd' : os.getcwd()})
+
           command.update({'_project_name' : project})
 
           part_commands = []
