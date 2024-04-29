@@ -44,8 +44,8 @@ class bob:
     self._target = target
     # template strings for commands
     self._command_template = {
-      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "{path}/output/{_project_name}", "--target", "{target}", "{project}"]},
-      'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean"], 'cmd_2' : ["make", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "-C", "{path}"]},
+      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]},
+      'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean", "all"], 'cmd_2' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]},
       'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
       'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
     }
@@ -67,6 +67,8 @@ class bob:
       str_options = ' '.join(options)
 
       str_options = str_options.replace('{_project_name}', '')
+
+      str_options = str_options.replace('{_pwd}', '')
 
       str_options = re.findall(r'\{(.*?)\}', str_options)
 
@@ -101,6 +103,8 @@ class bob:
             logger.info(f"No build rule for part: {part}.")
             continue
 
+
+          command.update({'_pwd' : os.getcwd()})
           command.update({'_project_name' : project})
 
           part_commands = []

@@ -48,8 +48,8 @@ def main():
     print("ERROR: ", e)
     return ~0
 
-  #coy rootfs to new location
-  src_rootfs_dir = os.getcwd() + '/' + args.rootfs
+  #copy rootfs to new location
+  src_rootfs_dir = os.getcwd() + '/' + args.rootfs + "/" + args.project_name + "/" + "images"
   dest_rootfs_dir = os.getcwd() + '/' + args.dest + "/" + args.project_name + "/" + "rootfs"
 
   try:

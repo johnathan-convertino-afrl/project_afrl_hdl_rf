@@ -1,17 +1,17 @@
 zed_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
     fusesoc: &fusesoc_fmcomms2-3
-      path: hdl/
+      path: hdl
       project: AFRL:project:fmcomms2-3:1.0.0
       target: zed_bootgen
     buildroot: &buildroot_fmcomms2-3
-      path: sw/linux/buildroot-afrl/
+      path: sw/linux/buildroot-afrl
       config: zynq_zed_ad_fmcomms2-3_defconfig
   sequential:
     script: &output_files_fmcomms2-3
       exec: python
       file: py/output_gen.py
-      args: "--rootfs sw/linux/buildroot-afrl/output/images/ --bootfs hdl/output --dest output"
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
     genimage:
       path: img_cfg
 zc702_fmcomms2-3_linux_busybox_sdcard:
