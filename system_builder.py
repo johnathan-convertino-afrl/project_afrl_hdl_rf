@@ -63,6 +63,12 @@ def main():
 
   yaml_data = open_yaml(args.config_file)
 
+  try:
+    deps_check(args.deps_file)
+  except Exception as e:
+    logger.error("Dependecies issue: " + str(e))
+    exit(~0)
+
   if yaml_data is None:
     exit(~0)
 
@@ -75,6 +81,24 @@ def main():
   submodule_init(os.getcwd())
 
   exit(builder.bob(yaml_data, args.target).run())
+
+#check each line of txt file programs
+def deps_check(deps_file):
+  try:
+    deps = open(deps_file, 'r')
+  except FileNotFoundError as e:
+    raise Exception(e)
+
+  deps_list = []
+
+  lines = deps.readlines()
+
+  for line in lines:
+    if shutil.which(line.strip()) is None:
+      deps_list.append(line.strip())
+
+  if len(deps_list) > 0:
+    raise Exception("missing: " + str(deps_list))
 
 # make sure submodules have been pulled. If not, pull them.
 def submodule_init(repo):
@@ -154,7 +178,7 @@ def parse_args(argv):
   group.add_argument('--list_commands',   action='store_true',  default=False,        dest='list_cmds',   required=False, help='List all available yaml build commands.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
-  parser.add_argument('--deps',   action='store',       default="deps.yml",   dest='deps_files',  required=False, help='Path to dependecys file, used to check if command line applications exist.')
+  parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',  required=False, help='Path to dependecys txt file, used to check if command line applications exist.')
   parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
   parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. No target will build all by default.')
 
