@@ -47,7 +47,7 @@ class bob:
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]},
       'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean", "all"], 'cmd_2' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]},
       'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
-      'genimage':   { 'cmd_1' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
+      'genimage':   { 'cmd_1' : ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"], 'cmd_2' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
     }
     self._projects = None
     self._threads  = []
