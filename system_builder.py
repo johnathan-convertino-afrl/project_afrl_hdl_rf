@@ -113,12 +113,16 @@ def deps_check(deps_file):
 
   lines = deps.readlines()
 
+  logger.info("Checking for dependencies...")
+
   for line in lines:
     if shutil.which(line.strip()) is None:
       deps_list.append(line.strip())
 
   if len(deps_list) > 0:
     raise Exception("missing: " + str(deps_list))
+
+  logger.info("Checking for dependencies complete.")
 
 # make sure submodules have been pulled. If not, pull them.
 def submodule_init(repo):
