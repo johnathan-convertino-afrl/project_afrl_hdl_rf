@@ -2,6 +2,7 @@ genimage
 fusesoc
 make
 quartus_cpf
+quartus
 mkimage
 vivado
 xsct

@@ -59,6 +59,9 @@ def main():
   if args.clean:
     exit(clean())
 
+  if args.list_deps:
+    exit(list_deps(args.deps_file))
+
   logger_setup()
 
   yaml_data = open_yaml(args.config_file)
@@ -66,7 +69,7 @@ def main():
   try:
     deps_check(args.deps_file)
   except Exception as e:
-    logger.error("Dependecies issue: " + str(e))
+    logger.error("Dependencies issue: " + str(e))
     exit(~0)
 
   if yaml_data is None:
@@ -81,6 +84,23 @@ def main():
   submodule_init(os.getcwd())
 
   exit(builder.bob(yaml_data, args.target).run())
+
+def list_deps(deps_file):
+  try:
+    deps = open(deps_file, 'r')
+  except FileNotFoundError as e:
+    print("ERROR :" + str(e))
+    return ~0
+
+  deps_list = []
+
+  lines = deps.readlines()
+
+  print("DEPENDENCIES FOR BUILD")
+  for line in lines:
+    print("CMD EXE: " + line.strip())
+
+  return 0
 
 #check each line of txt file programs
 def deps_check(deps_file):
@@ -176,6 +196,7 @@ def parse_args(argv):
 
   group.add_argument('--list_targets',    action='store_true',  default=False,        dest='list_all',    required=False, help='List all targets.')
   group.add_argument('--list_commands',   action='store_true',  default=False,        dest='list_cmds',   required=False, help='List all available yaml build commands.')
+  group.add_argument('--list_deps',       action='store_true',  default=False,        dest='list_deps',   required=False, help='List all available dependencies.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
   parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',  required=False, help='Path to dependecys txt file, used to check if command line applications exist.')
