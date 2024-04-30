@@ -2,6 +2,7 @@
 ### Contains HDL for Analog Devices based RF FPGA systems.
 
 ---
+
 author: Jay Convertino
 
 date: 2024.04.16
@@ -9,9 +10,8 @@ date: 2024.04.16
 details: Contains all HDL code for Analog Devices RF systems using the fusesoc system to build all FPGA code.
 
 license: MIT
----
 
-![logo_img](img/logo.png)
+---
 
 ## Quick Info
   - ip, individual ip cores that are used for various builds.
