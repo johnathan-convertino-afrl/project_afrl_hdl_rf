@@ -203,9 +203,9 @@ def parse_args(argv):
   group.add_argument('--list_deps',       action='store_true',  default=False,        dest='list_deps',   required=False, help='List all available dependencies.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
-  parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',  required=False, help='Path to dependecys txt file, used to check if command line applications exist.')
+  parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist.')
   parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
-  parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. No target will build all by default.')
+  parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
 
   return parser.parse_args()
 
