@@ -42,6 +42,14 @@ def main():
   src_bootfs_dir = os.getcwd() + '/' + args.bootfs + "/" + args.project_name + "/" + "BOOTFS"
   dest_bootfs_dir =  os.getcwd() + '/' + args.dest + "/" + args.project_name + "/" + "bootfs"
 
+  #remove bootfs destination if it exists
+  try:
+    shutil.rmtree(dest_bootfs_dir, ignore_errors=True)
+  except Exception as e:
+    print("ERROR: ", e)
+    return ~0
+
+  #copy dir and files over
   try:
     shutil.copytree(src_bootfs_dir, dest_bootfs_dir)
   except Exception as e:
@@ -52,6 +60,14 @@ def main():
   src_rootfs_dir = os.getcwd() + '/' + args.rootfs + "/" + args.project_name + "/" + "images"
   dest_rootfs_dir = os.getcwd() + '/' + args.dest + "/" + args.project_name + "/" + "rootfs"
 
+  #remove rootfs destination if it exists
+  try:
+    shutil.rmtree(dest_rootfs_dir, ignore_errors=True)
+  except Exception as e:
+    print("ERROR: ", e)
+    return ~0
+
+  #copy dir and files over
   try:
     shutil.copytree(src_rootfs_dir,  dest_rootfs_dir)
   except Exception as e:
