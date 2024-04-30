@@ -2,6 +2,7 @@
 ### Contains all parts needed to build complete Analog Devices based RF Linux FPGA systems.
 
 ---
+
 author: Jay Convertino
 
 date: 2024.04.16
@@ -9,9 +10,12 @@ date: 2024.04.16
 details: Contains all HDL code for Analog Devices RF systems using the fusesoc system to build all FPGA code. It also contains all of the needed Linux build items using buildroot. This is tied together with a python build system called system_builder.py to execute the required builds and generate output products.
 
 license: MIT
+
 ---
 
+
 ![logo_img](img/logo.png)
+
 
 ## Quick Info
   - output is a folder generated that contains all build outputs.
