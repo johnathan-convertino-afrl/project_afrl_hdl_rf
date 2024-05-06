@@ -62,14 +62,14 @@ def main():
   if args.list_deps:
     exit(list_deps(args.deps_file))
 
-  logger_setup()
+  logger_setup(args.debug)
 
   yaml_data = open_yaml(args.config_file)
 
   try:
     deps_check(args.deps_file)
   except Exception as e:
-    logger.error("Dependencies issue: " + str(e))
+    print("Dependencies issue: " + str(e))
     exit(~0)
 
   if yaml_data is None:
@@ -83,7 +83,17 @@ def main():
 
   submodule_init(os.getcwd())
 
-  exit(builder.bob(yaml_data, args.target).run())
+  print("Starting build system targets...\n")
+
+  try:
+    builder.bob(yaml_data, args.target).run()
+  except Exception as e:
+    print("\nERROR: build system failure, see log.")
+    exit(~0)
+
+  print("\nCompleted build system targets.")
+
+  exit(0)
 
 def list_deps(deps_file):
   try:
@@ -113,7 +123,7 @@ def deps_check(deps_file):
 
   lines = deps.readlines()
 
-  logger.info("Checking for dependencies...")
+  print("Checking for dependencies...")
 
   for line in lines:
     if shutil.which(line.strip()) is None:
@@ -122,29 +132,29 @@ def deps_check(deps_file):
   if len(deps_list) > 0:
     raise Exception("missing: " + str(deps_list))
 
-  logger.info("Checking for dependencies complete.")
+  print("Checking for dependencies complete.")
 
 # make sure submodules have been pulled. If not, pull them.
 def submodule_init(repo):
   repo = git.Repo(repo)
 
-  logger.info("Checking for submodules...")
+  print("Checking for submodules...")
 
   for submodule in repo.submodules:
     if not submodule.module_exists():
-      logger.info("Updating submodule in path: " + submodule.abspath)
-      logger.info("Submodule " + str(submodule.update(init=True)) + " pulled")
+      print("Updating submodule in path: " + submodule.abspath)
+      print("Submodule " + str(submodule.update(init=True)) + " pulled")
       if len(submodule.children()):
         submodule_init(submodule)
 
-  logger.info("Checking for submodules complete.")
+  print("Checking for submodules complete.")
 
 # open the yaml file for processing
 def open_yaml(file_name):
   try:
     stream = open(file_name, 'r')
   except:
-    logger.error(file_name + " not available.")
+    print(file_name + " not available.")
     return None
 
   try:
@@ -153,6 +163,7 @@ def open_yaml(file_name):
     logger.error("yaml issue")
     for line in str(e).split("\n"):
       logger.error(line)
+    print("ERROR: check log for yaml parse error.")
     return None
 
   return yaml_data
@@ -206,29 +217,33 @@ def parse_args(argv):
   parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist.')
   parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
   parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
+  parser.add_argument('--debug',  action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
 
   return parser.parse_args()
 
-# setup logger for log file and console output
-def logger_setup():
+# setup logger for log file
+def logger_setup(debug):
   log_name = time.strftime("log/" + "%y%m%d", time.localtime()) + '_' +  str(int(time.mktime(time.localtime()))) + '.log'
 
   os.makedirs(os.getcwd() + "/log", exist_ok=True)
 
-  logger.setLevel(logging.DEBUG)
+  if debug:
+    logger.setLevel(logging.DEBUG)
+  else:
+    logger.setLevel(logging.INFO)
 
   log_file = logging.FileHandler(filename = log_name, mode = 'w', delay=True)
-  log_file.setLevel(logging.DEBUG)
+
+  if debug:
+    log_file.setLevel(logging.DEBUG)
+  else:
+    log_file.setLevel(logging.INFO)
+
   format_file = logging.Formatter(fmt = '%(asctime)-12s : %(levelname)-8s : %(message)s', datefmt='%y.%m.%d %H:%M')
   log_file.setFormatter(format_file)
 
-  log_console = logging.StreamHandler()
-  log_console.setLevel(logging.INFO)
-  format_console = logging.Formatter(fmt = '%(levelname)-8s : %(message)s')
-  log_console.setFormatter(format_console)
-
   logger.addHandler(log_file)
-  logger.addHandler(log_console)
+
 
 # name is main is main
 if __name__=="__main__":

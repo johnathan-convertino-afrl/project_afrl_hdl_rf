@@ -35,6 +35,13 @@ import sys
 import logging
 import threading
 import re
+import time
+
+try:
+  import progressbar
+except ImportError:
+  print("REQUIREMENT MISSING: progressbar2, pip install progressbar2")
+  exit(0)
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +58,22 @@ class bob:
     }
     self._projects = None
     self._threads  = []
+    self._failed = False
+    self._thread_lock = None
+    self._items = 0
+    self._items_done = 0
+    self._bar = None
+    self._project_name = "None"
 
   # run the steps to build parts of targets
   def run(self):
-    self._process()
-    self._execute()
+    try:
+      self._process()
+    except Exception as e: raise
+
+    try:
+      self._execute()
+    except Exception as e: raise
 
   def list(self):
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
@@ -100,8 +118,8 @@ class bob:
           try:
             command_template = self._command_template[part].values()
           except KeyError:
-            logger.info(f"No build rule for part: {part}.")
-            continue
+            self._failed = True
+            raise Exception(f"No build rule for part: {part}.")
 
           command.update({'_pwd' : os.getcwd()})
 
@@ -137,10 +155,22 @@ class bob:
       logger.error("NO PROJECTS AVAILABLE FOR BUILDER")
       return ~0
 
+    self._items = self._projects_cmd_count()
+
+    threading.excepthook = self._thread_exception
+
+    self._thread_lock = threading.Lock()
+
+    bar_thread = threading.Thread(target=self._bar_thread, name="bar")
+
+    bar_thread.start()
+
     for project, run_types in self._projects.items():
       logger.info(f"Starting build for project: {project}")
 
       self._threads.clear()
+
+      self._project_name = project
 
       for run_type, commands in run_types.items():
         if run_type == 'concurrent':
@@ -155,12 +185,23 @@ class bob:
           for t in self._threads:
             t.join()
 
+          if self._failed:
+            raise Exception(f"ERROR executing command list: {' '.join(command_list)}")
+
         elif run_type == 'sequential':
           for command_list in commands:
             logger.debug("SEQUENTIAL: " + str(command_list))
-            self._subprocess(command_list)
+
+            try:
+              self._subprocess(command_list)
+            except Exception as e:
+              self._failed = True
+              raise
+
         else:
           logger.error(f"RUN_TYPE {run_type} is not a valid selection")
+
+    bar_thread.join()
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
@@ -176,12 +217,40 @@ class bob:
           if len(line):
             logger.error(line)
 
-        # on error I should kill everything and end building
-
-        return ~0
+        raise Exception(f"ERROR executing command: {' '.join(command)}")
 
       for line in result.stdout.split('\n'):
         if len(line):
           logger.debug(line)
 
-      logger.info(f"Completed command: {' '.join(command)}")
+      with self._thread_lock:
+        self._items_done = self._items_done + 1
+
+        time.sleep(1)
+
+        logger.info(f"Completed command: {' '.join(command)}")
+
+  def _projects_cmd_count(self):
+    count = 0
+
+    for project, run_types in self._projects.items():
+      for run_type, commands in run_types.items():
+        for command_list in commands:
+          count = count + (len(command_list))
+
+    return count
+
+  def _thread_exception(self, args):
+    self._failed = True
+    logger.error("Thread failed, allowing current threads to finish and then ending builds.")
+
+  def _bar_thread(self):
+    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Building')], max_value=self._items).start()
+
+    while((self._items_done < self._items) and (self._failed == False)):
+      time.sleep(0.1)
+      self._bar.update(Building=self._project_name)
+      self._bar.update(self._items_done)
+
+    self._bar.finish()
+

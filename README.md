@@ -13,9 +13,18 @@ license: MIT
 
 ---
 
-
 ![logo_img](img/logo.png)
 
+## TODO
+  - Add all fmcomms2-3 projects
+  - Add all fmcomms5 projects
+  - Add rfsoc projects
+  - Add jesd204 projects
+
+## BUGS
+  - FPGA HDL AXIS cpack2 core causes data errors
+  - Buildroot user profile for all users
+  - root/su privileges for afrl user
 
 ## Quick Info
   - output is a folder generated that contains all build outputs.
