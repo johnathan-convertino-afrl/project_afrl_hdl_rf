@@ -252,5 +252,9 @@ class bob:
       self._bar.update(Building=self._project_name)
       self._bar.update(self._items_done)
 
-    self._bar.finish()
+    if self._failed:
+      self._bar.update(Building="ERROR")
+    else:
+      self._bar.update(Building="Complete")
+      self._bar.finish()
 
