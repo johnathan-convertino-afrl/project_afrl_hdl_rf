@@ -207,23 +207,23 @@ class bob:
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
-      # result = None
-      #
-      # try:
-      #   logger.info(f"Executing command: {' '.join(command)}")
-      #   result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
-      # except subprocess.CalledProcessError as error_code:
-      #   logger.error(str(error_code))
-      #
-      #   for line in error_code.stderr.split('\n'):
-      #     if len(line):
-      #       logger.error(line)
-      #
-      #   raise Exception(f"ERROR executing command: {' '.join(command)}")
-      #
-      # for line in result.stdout.split('\n'):
-      #   if len(line):
-      #     logger.debug(line)
+      result = None
+
+      try:
+        logger.info(f"Executing command: {' '.join(command)}")
+        result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
+      except subprocess.CalledProcessError as error_code:
+        logger.error(str(error_code))
+
+        for line in error_code.stderr.split('\n'):
+          if len(line):
+            logger.error(line)
+
+        raise Exception(f"ERROR executing command: {' '.join(command)}")
+
+      for line in result.stdout.split('\n'):
+        if len(line):
+          logger.debug(line)
 
       with self._thread_lock:
         self._items_done = self._items_done + 1
