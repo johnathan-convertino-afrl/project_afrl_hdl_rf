@@ -22,7 +22,6 @@ license: MIT
   - Add jesd204 projects
 
 ## BUGS
-  - FPGA HDL AXIS cpack2 core causes data errors
   - Buildroot user profile for all users
   - root/su privileges for afrl user
 
