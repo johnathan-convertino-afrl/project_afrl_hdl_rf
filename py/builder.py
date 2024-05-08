@@ -62,7 +62,6 @@ class bob:
     self._thread_lock = None
     self._items = 0
     self._items_done = 0
-    self._bar = None
     self._project_name = "None"
 
   # run the steps to build parts of targets
@@ -246,18 +245,19 @@ class bob:
     logger.error("Thread failed, allowing current threads to finish and then ending builds.")
 
   def _bar_thread(self):
-    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
+    bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
-    self._bar.update(Status="BUILDING")
+    bar.update(Status="BUILDING")
 
     while((self._items_done < self._items) and (self._failed == False)):
       time.sleep(0.1)
-      self._bar.update(Target=self._project_name)
-      self._bar.update(self._items_done)
+      bar.update(Target=self._project_name)
+      bar.update(self._items_done)
 
     if self._failed:
-      self._bar.update(Status="ERROR")
+      bar.update(Status="ERROR")
     else:
-      self._bar.update(Status="SUCCSESS")
-      self._bar.finish()
+      bar.update(Status="SUCCSESS")
+
+    bar.finish(dirty=self._failed)
 
