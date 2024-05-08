@@ -76,7 +76,7 @@ def main():
     exit(~0)
 
   if args.list_cmds:
-    exit(builder.bob(yaml_data, args.target).list())
+    exit(builder.bob(yaml_data).list())
 
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
@@ -86,7 +86,7 @@ def main():
   print("Starting build system targets...\n")
 
   try:
-    builder.bob(yaml_data, args.target).run()
+    builder.bob(yaml_data, args.target, args.dryrun).run()
   except Exception as e:
     print("\nERROR: build system failure, see log.")
     exit(~0)
@@ -218,6 +218,7 @@ def parse_args(argv):
   parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
   parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
   parser.add_argument('--debug',  action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
+  parser.add_argument('--dryrun', action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')
 
   return parser.parse_args()
 
