@@ -209,22 +209,23 @@ class bob:
     for command in list_of_commands:
       result = None
 
-      try:
-        logger.info(f"Executing command: {' '.join(command)}")
-        if self._dryrun is False:
+      logger.info(f"Executing command: {' '.join(command)}")
+
+      if self._dryrun is False:
+        try:
           result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
-      except subprocess.CalledProcessError as error_code:
-        logger.error(str(error_code))
+        except subprocess.CalledProcessError as error_code:
+          logger.error(str(error_code))
 
-        for line in error_code.stderr.split('\n'):
+          for line in error_code.stderr.split('\n'):
+            if len(line):
+              logger.error(line)
+
+          raise Exception(f"ERROR executing command: {' '.join(command)}")
+
+        for line in result.stdout.split('\n'):
           if len(line):
-            logger.error(line)
-
-        raise Exception(f"ERROR executing command: {' '.join(command)}")
-
-      for line in result.stdout.split('\n'):
-        if len(line):
-          logger.debug(line)
+            logger.debug(line)
 
       with self._thread_lock:
         self._items_done = self._items_done + 1
@@ -247,19 +248,21 @@ class bob:
     logger.error("Thread failed, allowing current threads to finish and then ending builds.")
 
   def _bar_thread(self):
-    bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
+    status = "BUILDING"
+    bar = progressbar.ProgressBar(widgets=[" [", progressbar.Timer(format='%(elapsed)s'), "] ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
-    bar.update(Status="BUILDING")
+    bar.update(Status=f"{status:^8}")
 
     while((self._items_done < self._items) and (self._failed == False)):
       time.sleep(0.1)
-      bar.update(Target=self._project_name)
+      bar.update(Target=f"{self._project_name:<64}")
       bar.update(self._items_done)
 
     if self._failed:
-      bar.update(Status="ERROR")
+      status = "ERROR"
     else:
-      bar.update(Status="SUCCSESS")
+      status = "SUCCESS"
 
+    bar.update(Status=f"{status:^8}")
     bar.finish(dirty=self._failed)
 
