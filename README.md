@@ -37,6 +37,7 @@ license: MIT
     - zcu102
     - a10soc
     - hanpilot
+
   - FMCOMMS5
     - zc702
     - zc706
@@ -51,6 +52,10 @@ license: MIT
   - none
 
 ## Requirements
+### system_build.py
+  - gitpython
+  - progressbar2
+
 ### OS
   - Tested on Ubuntu 22.04
 
@@ -104,7 +109,26 @@ license: MIT
 ### System Builder
 System builder is a python script that will build all targets in order based on a yaml script. By default this is build.yml if it is not specified. It also checks dependencies, cleans toplevel untracked artifacts, and pulls subrepos.
 
+Each target will be built with its current status show in its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build.
+
+Example of output to terminal (formatted to fit this document):
+
+```
+Checking for dependencies...
+Checking for dependencies complete.
+Checking for submodules...
+Checking for submodules complete.
+Starting build system targets...
+
+[0:13:23] 100% |████████████████| Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
+[0:13:37] 100% |████████████████| Status: SUCCESS  | Target: zc702_fmcomms2-3_linux_busybox_sdcard
+[0:13:38] 100% |████████████████| Status: SUCCESS  | Target: zc706_fmcomms2-3_linux_busybox_sdcard
+
+Completed build system targets.
+```
+
 #### Options
+
 ```
   --list_targets       List all targets.
   --list_commands      List all available yaml build commands.
@@ -116,6 +140,9 @@ System builder is a python script that will build all targets in order based on 
                        default.
   --target TARGET      Target name from list. None will build all targets by
                        default.
+  --debug              Turn on debug logging messages
+  --dryrun             Run build without executing commands.
+
 ```
 
 #### build.yml
