@@ -155,22 +155,24 @@ class bob:
       logger.error("NO PROJECTS AVAILABLE FOR BUILDER")
       return ~0
 
-    self._items = self._projects_cmd_count()
-
     threading.excepthook = self._thread_exception
 
     self._thread_lock = threading.Lock()
 
-    bar_thread = threading.Thread(target=self._bar_thread, name="bar")
-
-    bar_thread.start()
-
     for project, run_types in self._projects.items():
       logger.info(f"Starting build for project: {project}")
+
+      self._items = self._project_cmd_count(run_types)
+
+      self._items_done = 0
 
       self._threads.clear()
 
       self._project_name = project
+
+      bar_thread = threading.Thread(target=self._bar_thread, name="bar")
+
+      bar_thread.start()
 
       for run_type, commands in run_types.items():
         if run_type == 'concurrent':
@@ -201,27 +203,27 @@ class bob:
         else:
           logger.error(f"RUN_TYPE {run_type} is not a valid selection")
 
-    bar_thread.join()
+      bar_thread.join()
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
-      result = None
-
-      try:
-        logger.info(f"Executing command: {' '.join(command)}")
-        result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
-      except subprocess.CalledProcessError as error_code:
-        logger.error(str(error_code))
-
-        for line in error_code.stderr.split('\n'):
-          if len(line):
-            logger.error(line)
-
-        raise Exception(f"ERROR executing command: {' '.join(command)}")
-
-      for line in result.stdout.split('\n'):
-        if len(line):
-          logger.debug(line)
+      # result = None
+      #
+      # try:
+      #   logger.info(f"Executing command: {' '.join(command)}")
+      #   result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
+      # except subprocess.CalledProcessError as error_code:
+      #   logger.error(str(error_code))
+      #
+      #   for line in error_code.stderr.split('\n'):
+      #     if len(line):
+      #       logger.error(line)
+      #
+      #   raise Exception(f"ERROR executing command: {' '.join(command)}")
+      #
+      # for line in result.stdout.split('\n'):
+      #   if len(line):
+      #     logger.debug(line)
 
       with self._thread_lock:
         self._items_done = self._items_done + 1
@@ -230,13 +232,12 @@ class bob:
 
         logger.info(f"Completed command: {' '.join(command)}")
 
-  def _projects_cmd_count(self):
+  def _project_cmd_count(self, run_types):
     count = 0
 
-    for project, run_types in self._projects.items():
-      for run_type, commands in run_types.items():
-        for command_list in commands:
-          count = count + (len(command_list))
+    for run_type, commands in run_types.items():
+      for command_list in commands:
+        count = count + (len(command_list))
 
     return count
 
@@ -245,16 +246,18 @@ class bob:
     logger.error("Thread failed, allowing current threads to finish and then ending builds.")
 
   def _bar_thread(self):
-    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Building')], max_value=self._items).start()
+    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " ", progressbar.Variable('Target')], max_value=self._items).start()
+
+    self._bar.update(Status="BUILDING")
 
     while((self._items_done < self._items) and (self._failed == False)):
       time.sleep(0.1)
-      self._bar.update(Building=self._project_name)
+      self._bar.update(Target=self._project_name)
       self._bar.update(self._items_done)
 
     if self._failed:
-      self._bar.update(Building="ERROR")
+      self._bar.update(Status="ERROR")
     else:
-      self._bar.update(Building="Complete")
+      self._bar.update(Status="SUCCSESS")
       self._bar.finish()
 
