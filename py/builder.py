@@ -246,7 +246,7 @@ class bob:
     logger.error("Thread failed, allowing current threads to finish and then ending builds.")
 
   def _bar_thread(self):
-    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " ", progressbar.Variable('Target')], max_value=self._items).start()
+    self._bar = progressbar.ProgressBar(widgets=[progressbar.RotatingMarker(), " ", progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
     self._bar.update(Status="BUILDING")
 
