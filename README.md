@@ -21,10 +21,6 @@ license: MIT
   - Add rfsoc projects
   - Add jesd204 projects
 
-## BUGS
-  - Buildroot user profile for all users
-  - root/su privileges for afrl user
-
 ## Quick Info
   - output is a folder generated that contains all build outputs.
     - hdl for all FPGA code

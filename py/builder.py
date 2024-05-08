@@ -46,9 +46,10 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 class bob:
-  def __init__(self, yaml_data, target):
+  def __init__(self, yaml_data, target = None, dryrun = False):
     self._yaml_data = yaml_data
     self._target = target
+    self._dryrun = dryrun
     # template strings for commands
     self._command_template = {
       'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]},
@@ -210,7 +211,8 @@ class bob:
 
       try:
         logger.info(f"Executing command: {' '.join(command)}")
-        result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
+        if self._dryrun is False:
+          result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
       except subprocess.CalledProcessError as error_code:
         logger.error(str(error_code))
 
