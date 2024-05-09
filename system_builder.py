@@ -66,14 +66,6 @@ def main():
 
   yaml_data = open_yaml(args.config_file)
 
-  if args.nodepcheck is False:
-    try:
-      deps_check(args.deps_file)
-    except Exception as e:
-      print("Dependencies issue:")
-      print(str(e))
-      exit(~0)
-
   if yaml_data is None:
     exit(~0)
 
@@ -82,6 +74,14 @@ def main():
 
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
+
+  if args.nodepcheck is False:
+    try:
+      deps_check(args.deps_file)
+    except Exception as e:
+      print("Dependencies issue:")
+      print(str(e))
+      exit(~0)
 
   if args.noupdate is False:
     submodule_init(os.getcwd())
@@ -171,8 +171,10 @@ def open_yaml(file_name):
     for line in str(e).split("\n"):
       logger.error(line)
     print("ERROR: check log for yaml parse error.")
+    stream.close()
     return None
 
+  stream.close()
   return yaml_data
 
 # List projects from the yaml file.
