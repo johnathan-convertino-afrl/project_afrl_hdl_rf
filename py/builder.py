@@ -184,11 +184,13 @@ class bob:
 
             thread.start()
 
+            time.sleep(5)
+
+            if self._failed:
+              raise Exception(f"ERROR executing command list: {' '.join(command_list)}")
+
           for t in self._threads:
             t.join()
-
-          if self._failed:
-            raise Exception(f"ERROR executing command list: {' '.join(command_list)}")
 
         elif run_type == 'sequential':
           for command_list in commands:
@@ -196,9 +198,7 @@ class bob:
 
             try:
               self._subprocess(command_list)
-            except Exception as e:
-              self._failed = True
-              raise
+            except Exception as e: raise
 
         else:
           logger.error(f"RUN_TYPE {run_type} is not a valid selection")
@@ -209,6 +209,9 @@ class bob:
     for command in list_of_commands:
       result = None
 
+      if self._failed:
+        return
+
       logger.info(f"Executing command: {' '.join(command)}")
 
       if self._dryrun is False:
@@ -216,6 +219,8 @@ class bob:
           result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
         except subprocess.CalledProcessError as error_code:
           logger.error(str(error_code))
+
+          self._failed = True
 
           for line in error_code.stderr.split('\n'):
             if len(line):
@@ -244,8 +249,7 @@ class bob:
     return count
 
   def _thread_exception(self, args):
-    self._failed = True
-    logger.error("Thread failed, allowing current threads to finish and then ending builds.")
+    logger.error("Thread failed, allowing current threads to finish and then end builds.")
 
   def _bar_thread(self):
     status = "BUILDING"

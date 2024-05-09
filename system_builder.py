@@ -81,7 +81,9 @@ def main():
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
 
+  print("Checking for submodules...")
   submodule_init(os.getcwd())
+  print("Checking for submodules complete.")
 
   print("Starting build system targets...\n")
 
@@ -138,16 +140,15 @@ def deps_check(deps_file):
 def submodule_init(repo):
   repo = git.Repo(repo)
 
-  print("Checking for submodules...")
-
   for submodule in repo.submodules:
+    submodule.update(to_latest_revision=True)
+
     if not submodule.module_exists():
       print("Updating submodule in path: " + submodule.abspath)
-      print("Submodule " + str(submodule.update(init=True)) + " pulled")
-      if len(submodule.children()):
-        submodule_init(submodule)
+      print("Submodule " + str(submodule.update()) + " pulled")
 
-  print("Checking for submodules complete.")
+    if len(submodule.children()):
+      submodule_init(submodule)
 
 # open the yaml file for processing
 def open_yaml(file_name):
