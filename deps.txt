@@ -1,8 +1,6 @@
 genimage
 fusesoc
 make
-quartus_cpf
-quartus
 mkimage
 vivado
 xsct
@@ -33,3 +31,4 @@ sdiff
 ld
 as
 gold
+arm-none-eabi-gcc
