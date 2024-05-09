@@ -59,6 +59,7 @@ class bob:
     }
     self._projects = None
     self._threads  = []
+    self._processes = []
     self._failed = False
     self._thread_lock = None
     self._items = 0
@@ -184,7 +185,7 @@ class bob:
 
             thread.start()
 
-            time.sleep(5)
+            time.sleep(2)
 
             if self._failed:
               raise Exception(f"ERROR executing command list: {' '.join(command_list)}")
@@ -207,17 +208,19 @@ class bob:
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
-      result = None
+      process = None
 
       if self._failed:
-        return
+        raise Exception(f"ERROR executing command: {' '.join(command)}")
 
       logger.info(f"Executing command: {' '.join(command)}")
 
       if self._dryrun is False:
         try:
-          result = subprocess.run(command, capture_output=True, check=True, text=True, cwd=str(pathlib.Path.cwd()))
-        except subprocess.CalledProcessError as error_code:
+          process = subprocess.Popen(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(pathlib.Path.cwd()))
+          self._processes.append(process)
+          process.wait()
+        except Exception as error_code:
           logger.error(str(error_code))
 
           self._failed = True
@@ -226,14 +229,19 @@ class bob:
             if len(line):
               logger.error(line)
 
+          self._processes.remove(process)
+
           raise Exception(f"ERROR executing command: {' '.join(command)}")
 
-        for line in result.stdout.split('\n'):
+        for line in process.stdout.split('\n'):
           if len(line):
             logger.debug(line)
 
       with self._thread_lock:
         self._items_done = self._items_done + 1
+
+        if self._dryrun is False:
+          self._processes.remove(process)
 
         time.sleep(1)
 
@@ -249,7 +257,11 @@ class bob:
     return count
 
   def _thread_exception(self, args):
-    logger.error("Thread failed, allowing current threads to finish and then end builds.")
+    if self._dryrun is False:
+      for p in self._processes:
+        p.kill()
+
+    logger.error("Build failed, killed threads and terminating program.")
 
   def _bar_thread(self):
     status = "BUILDING"
