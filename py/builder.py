@@ -104,8 +104,7 @@ class bob:
       try:
         self._yaml_data = { self._target: self._yaml_data[self._target]}
       except KeyError:
-        logger.error(f"Target: {self._target}, does not exist.")
-        return ~0
+        raise Exception(f"Target: {self._target}, does not exist.")
 
     self._projects = {}
 
@@ -119,7 +118,6 @@ class bob:
           try:
             command_template = self._command_template[part].values()
           except KeyError:
-            self._failed = True
             raise Exception(f"No build rule for part: {part}.")
 
           command.update({'_pwd' : os.getcwd()})
@@ -147,14 +145,11 @@ class bob:
 
       logger.info(f"Added commands for project: {project}")
 
-    return 0
-
   #call subprocess as a thread and add it to a list of threads for wait to check on.
   #iterate over projects avaiable and execute commands per project
   def _execute(self):
     if self._projects == None:
-      logger.error("NO PROJECTS AVAILABLE FOR BUILDER")
-      return ~0
+      raise Exception("NO PROJECTS AVAILABLE FOR BUILDER")
 
     threading.excepthook = self._thread_exception
 
@@ -187,11 +182,11 @@ class bob:
 
             time.sleep(2)
 
-            if self._failed:
-              raise Exception(f"ERROR executing command list: {' '.join(command_list)}")
-
           for t in self._threads:
             t.join()
+
+          if self._failed:
+            raise Exception(f"ERROR one or more threads failed.")
 
         elif run_type == 'sequential':
           for command_list in commands:
@@ -199,19 +194,24 @@ class bob:
 
             try:
               self._subprocess(command_list)
-            except Exception as e: raise
+            except Exception as e:
+              self._failed = True
+              time.sleep(2)
+              raise
 
         else:
-          logger.error(f"RUN_TYPE {run_type} is not a valid selection")
+          raise Exception(f"ERROR RUN_TYPE {run_type} is not a valid selection")
 
       bar_thread.join()
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
       process = None
+      cmd_output = None
+      cmd_error = None
 
       if self._failed:
-        raise Exception(f"ERROR executing command: {' '.join(command)}")
+        raise Exception(f"ERROR previous build process failed, aborting: {' '.join(command)}")
 
       logger.info(f"Executing command: {' '.join(command)}")
 
@@ -219,22 +219,18 @@ class bob:
         try:
           process = subprocess.Popen(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(pathlib.Path.cwd()))
           self._processes.append(process)
-          process.wait()
-        except Exception as error_code:
-          logger.error(str(error_code))
+          cmd_output, cmd_error = process.communicate()
+          exception = process.poll()
+          if exception:
+            if cmd_error:
+              for line in cmd_error.split('\n'):
+                if len(line):
+                  logger.error(line)
+            raise Exception(f"ERROR executing command: {' '.join(command)}")
+        except Exception as e: raise
 
-          self._failed = True
-
-          for line in error_code.stderr.split('\n'):
-            if len(line):
-              logger.error(line)
-
-          self._processes.remove(process)
-
-          raise Exception(f"ERROR executing command: {' '.join(command)}")
-
-        for line in process.stdout.split('\n'):
-          if len(line):
+        if cmd_output:
+          for line in cmd_output.split('\n'):
             logger.debug(line)
 
       with self._thread_lock:
@@ -257,11 +253,13 @@ class bob:
     return count
 
   def _thread_exception(self, args):
+    self._failed = True
+
     if self._dryrun is False:
       for p in self._processes:
-        p.kill()
+        p.terminate()
 
-    logger.error("Build failed, killed threads and terminating program.")
+    logger.error(f"ERROR build failed, terminated subprocess and program. {str(args.exc_value)}")
 
   def _bar_thread(self):
     status = "BUILDING"

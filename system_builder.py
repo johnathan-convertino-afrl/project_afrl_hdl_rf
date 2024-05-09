@@ -81,15 +81,15 @@ def main():
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
 
-  print("Checking for submodules...")
-  submodule_init(os.getcwd())
-  print("Checking for submodules complete.")
+  if args.noupdate is False:
+    submodule_init(os.getcwd())
 
   print("Starting build system targets...\n")
 
   try:
     builder.bob(yaml_data, args.target, args.dryrun).run()
   except Exception as e:
+    logger.error(str(e))
     print("\nERROR: build system failure, see log.")
     exit(~0)
 
@@ -140,15 +140,19 @@ def deps_check(deps_file):
 def submodule_init(repo):
   repo = git.Repo(repo)
 
+  print("Checking for submodules...")
+
   for submodule in repo.submodules:
-    submodule.update(to_latest_revision=True)
+    submodule.update(recursive=True)
 
-    if not submodule.module_exists():
-      print("Updating submodule in path: " + submodule.abspath)
-      print("Submodule " + str(submodule.update()) + " pulled")
+  print("Checking for submodules complete.")
 
-    if len(submodule.children()):
-      submodule_init(submodule)
+    # if not submodule.module_exists():
+    #   print("Updating submodule in path: " + submodule.abspath)
+    #   print("Submodule " + str(submodule.update()) + " pulled")
+    #
+    # if len(submodule.children()):
+    #   submodule_init(submodule)
 
 # open the yaml file for processing
 def open_yaml(file_name):
@@ -215,11 +219,13 @@ def parse_args(argv):
   group.add_argument('--list_deps',       action='store_true',  default=False,        dest='list_deps',   required=False, help='List all available dependencies.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
-  parser.add_argument('--deps',   action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist.')
-  parser.add_argument('--build',  action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
-  parser.add_argument('--target', action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
-  parser.add_argument('--debug',  action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
-  parser.add_argument('--dryrun', action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')
+  parser.add_argument('--deps',       action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist.')
+  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
+  parser.add_argument('--target',     action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
+  parser.add_argument('--debug',      action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
+  parser.add_argument('--dryrun',     action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')
+  parser.add_argument('--noupdate',   action='store_true',  default=False,        dest='noupdate',    required=False, help='Run build without updating submodules.')
+  parser.add_argument('--nodepcheck', action='store_true',  default=False,        dest='nodepcheck',  required=False, help='Run build without checking dependencies.')
 
   return parser.parse_args()
 

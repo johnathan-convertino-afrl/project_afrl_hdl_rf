@@ -142,6 +142,9 @@ Completed build system targets.
                        default.
   --debug              Turn on debug logging messages
   --dryrun             Run build without executing commands.
+  --noupdate           Run build without updating submodules.
+  --nodepcheck         Run build without checking dependencies.
+
 
 ```
 
