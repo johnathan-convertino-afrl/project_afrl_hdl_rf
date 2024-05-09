@@ -66,11 +66,13 @@ def main():
 
   yaml_data = open_yaml(args.config_file)
 
-  try:
-    deps_check(args.deps_file)
-  except Exception as e:
-    print("Dependencies issue: " + str(e))
-    exit(~0)
+  if args.nodepcheck is False:
+    try:
+      deps_check(args.deps_file)
+    except Exception as e:
+      print("Dependencies issue:")
+      print(str(e))
+      exit(~0)
 
   if yaml_data is None:
     exit(~0)
@@ -132,7 +134,7 @@ def deps_check(deps_file):
       deps_list.append(line.strip())
 
   if len(deps_list) > 0:
-    raise Exception("missing: " + str(deps_list))
+    raise Exception("\n".join(deps_list))
 
   print("Checking for dependencies complete.")
 
@@ -219,8 +221,8 @@ def parse_args(argv):
   group.add_argument('--list_deps',       action='store_true',  default=False,        dest='list_deps',   required=False, help='List all available dependencies.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
-  parser.add_argument('--deps',       action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist.')
-  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is default.')
+  parser.add_argument('--deps',       action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.')
+  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is the default.')
   parser.add_argument('--target',     action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
   parser.add_argument('--debug',      action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
   parser.add_argument('--dryrun',     action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')
