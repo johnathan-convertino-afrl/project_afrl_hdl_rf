@@ -111,7 +111,9 @@ System builder is a python script that will build all targets in order based on 
 
 Each target will be built with its current status show in its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build.
 
-Example of output to terminal (formatted to fit this document):
+Example of output to terminal below (formatted to fit this document).
+
+##### Successful build:
 
 ```
 Checking for dependencies...
@@ -125,6 +127,16 @@ Starting build system targets...
 [0:13:38] 100% |████████████████| Status: SUCCESS  | Target: zc706_fmcomms2-3_linux_busybox_sdcard
 
 Completed build system targets.
+```
+
+##### Failed build:
+
+```
+Starting build system targets...
+
+ [0:26:36]  85% |█████████▓    | Status:  ERROR   | Target: zcu102_fmcomms5_linux_busybox_sdcard
+
+ERROR: build system failure, see log file log/240513_1715617815.log.
 ```
 
 #### Options
