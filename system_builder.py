@@ -93,7 +93,7 @@ def main():
   except Exception as e:
     logger.error(str(e))
     time.sleep(1)
-    print("\n" +f"ERROR: build system failure, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}.")
+    print("\n" +f"ERROR: build system failure, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)
 
   print("\nCompleted build system targets.")
