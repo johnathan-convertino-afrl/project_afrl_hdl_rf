@@ -70,7 +70,7 @@ def main():
     exit(~0)
 
   if args.list_cmds:
-    exit(builder.bob(yaml_data).list())
+    exit(builder.bob("py/build_cmds.yml", yaml_data).list())
 
   if args.list_all:
     exit(list_projects(yaml_data, args.config_file))
@@ -89,14 +89,14 @@ def main():
   print("Starting build system targets...\n")
 
   try:
-    builder.bob(yaml_data, args.target, args.dryrun).run()
+    builder.bob("py/build_cmds.yml", yaml_data, args.target, args.dryrun).run()
   except Exception as e:
     logger.error(str(e))
     time.sleep(1)
-    print("\n" +f"ERROR: build system failure, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
+    print("\n" +f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)
 
-  print("\nCompleted build system targets.")
+  print("\n" + f"Completed build system targets, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
 
   exit(0)
 
@@ -225,7 +225,7 @@ def parse_args(argv):
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
   parser.add_argument('--deps',       action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.')
-  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yaml is the default.')
+  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yml is the default.')
   parser.add_argument('--target',     action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
   parser.add_argument('--debug',      action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
   parser.add_argument('--dryrun',     action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')

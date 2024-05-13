@@ -46,17 +46,12 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 class bob:
-  def __init__(self, yaml_data, target = None, dryrun = False):
+  def __init__(self, yaml_build_cmds_file, yaml_data, target = None, dryrun = False):
     self._yaml_data = yaml_data
+    self._yaml_build_cmds_file = yaml_build_cmds_file
     self._target = target
     self._dryrun = dryrun
-    # template strings for commands
-    self._command_template = {
-      'fusesoc':    { 'cmd_1' : ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]},
-      'buildroot':  { 'cmd_1' : ["make", "-C", "{path}", "clean", "all"], 'cmd_2' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"], 'cmd_3' : ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]},
-      'script':     { 'cmd_1' : ["{exec}", "{file}", "{_project_name}", "{args}"]},
-      'genimage':   { 'cmd_1' : ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"], 'cmd_2' : ["genimage", "--config", "{path}/{_project_name}.cfg"]}
-    }
+    self._command_template = None
     self._projects = None
     self._threads  = []
     self._processes = []
@@ -69,6 +64,10 @@ class bob:
   # run the steps to build parts of targets
   def run(self):
     try:
+      self._gen_build_cmds()
+    except Exception as e: raise
+
+    try:
       self._process()
     except Exception as e: raise
 
@@ -77,6 +76,10 @@ class bob:
     except Exception as e: raise
 
   def list(self):
+    try:
+      self._gen_build_cmds()
+    except Exception as e: raise
+
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
     for tool, commands in self._command_template.items():
       options = []
@@ -95,9 +98,31 @@ class bob:
 
       print(f"COMMAND: {tool:<16} OPTIONS: {filter_options}")
 
+  def _gen_build_cmds(self):
+    try:
+      stream = open(self._yaml_build_cmds_file, 'r')
+    except Exception as e: raise
+
+    loaded = None
+
+    try:
+      loaded = yaml.safe_load(stream)
+    except Exception as e:
+      stream.close()
+      raise
+
+    self._command_template = loaded
+
+    logger.debug(self._command_template)
+
+    stream.close()
+
   # create dict of dicts that contains lists with lists of lists to execute with subprocess
   # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
   def _process(self):
+
+    if self._command_template is None:
+      raise Exception("Command template is None")
 
     #filter target into updated dictionary if it was selected
     if self._target != None:
