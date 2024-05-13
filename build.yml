@@ -1,3 +1,12 @@
+################################################################################
+## file: build.yml
+## author: Jay Convertino
+## info: Contains all build targets in with following format and atributes
+## Order is from the top of this document, to the bottom. Same for Parts.
+## - concurrent = any parts (commands) that will be run at the same time.
+## - sequential = parts are run one at a time from top to bottom.
+################################################################################
+
 ## FMCOMMS2-3
 zed_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
@@ -80,6 +89,7 @@ hanpilot_fmcomms2-3_linux_busybox_sdcard:
       <<: *output_files_fmcomms2-3
     genimage:
       path: img_cfg
+
 ## FMCOMMS5
 zc702_fmcomms5_linux_busybox_sdcard:
   concurrent:
