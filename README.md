@@ -1,5 +1,5 @@
 # AFRL HDL RF Projects
-### Contains all parts needed to build complete Analog Devices based RF Linux FPGA systems.
+### HDL and Linux SDCARD system generator for RF FPGA devices
 
 ---
 
@@ -7,7 +7,7 @@ author: Jay Convertino
 
 date: 2024.04.16
 
-details: Contains all HDL code for Analog Devices RF systems using the fusesoc system to build all FPGA code. It also contains all of the needed Linux build items using buildroot. This is tied together with a python build system called system_builder.py to execute the required builds and generate output products.
+details: Contains all of the needed parts to generate FPGA based RF devices. Targets listed below. Uses fusesoc to generate HDL code, and buildroot for Linux. Combined these generate full SDCARD image files using genimage.
 
 license: MIT
 

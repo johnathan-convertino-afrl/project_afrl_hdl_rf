@@ -48,7 +48,7 @@ zcu102_fmcomms2-3_linux_busybox_sdcard:
       target: zcu102_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: zynq_zcu102_ad_fmcomms2-3_defconfig
+      config: zynqmp_zcu102_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -117,7 +117,7 @@ zcu102_fmcomms5_linux_busybox_sdcard:
       target: zcu102_bootgen
     buildroot:
       <<: *buildroot_fmcomms5
-      config: zynq_zcu102_ad_fmcomms5_defconfig
+      config: zynqmp_zcu102_ad_fmcomms5_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
