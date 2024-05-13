@@ -16,8 +16,6 @@ license: MIT
 ![logo_img](img/logo.png)
 
 ## TODO
-  - Add all fmcomms2-3 projects
-  - Add all fmcomms5 projects
   - Add rfsoc projects
   - Add jesd204 projects
 
@@ -146,8 +144,6 @@ Completed build system targets.
   --dryrun             Run build without executing commands.
   --noupdate           Run build without updating submodules.
   --nodepcheck         Run build without checking dependencies.
-
-
 ```
 
 #### build.yml
@@ -204,3 +200,15 @@ xsct
 bootgen
 gcc
 ```
+
+## Help
+### General
+Look at the build log log/DATE_TIME.log for hints on where the error happened. Add the --debug option to the run to get all output dumped to the log file.
+
+HDL and Buildroot use various external sites to pull in remote dependencies. If there is no internet connection, then the repo will not be pulled and the build will fail.
+
+### HDL
+For fusesoc FPGA builds look at output/hdl/TARGET_NAME/*.log . For Vivado this is vivado.log. For the parse_and_gen python script its log file is generate.log.
+
+### Linux (Buildroot, busybox)
+For buildroot, please enable the debug option at run time to get detailed output to the main log file. Errors will always go to the log file.
