@@ -92,6 +92,7 @@ def main():
     builder.bob(yaml_data, args.target, args.dryrun).run()
   except Exception as e:
     logger.error(str(e))
+    time.sleep(1)
     print("\nERROR: build system failure, see log.")
     exit(~0)
 

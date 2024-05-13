@@ -186,7 +186,7 @@ class bob:
             t.join()
 
           if self._failed:
-            raise Exception(f"ERROR one or more threads failed.")
+            raise Exception(f"One or more threads failed.")
 
         elif run_type == 'sequential':
           for command_list in commands:
@@ -200,7 +200,7 @@ class bob:
               raise
 
         else:
-          raise Exception(f"ERROR RUN_TYPE {run_type} is not a valid selection")
+          raise Exception(f"RUN_TYPE {run_type} is not a valid selection")
 
       bar_thread.join()
 
@@ -211,7 +211,7 @@ class bob:
       cmd_error = None
 
       if self._failed:
-        raise Exception(f"ERROR previous build process failed, aborting: {' '.join(command)}")
+        raise Exception(f"Previous build process failed, aborting: {' '.join(command)}")
 
       logger.info(f"Executing command: {' '.join(command)}")
 
@@ -226,7 +226,7 @@ class bob:
               for line in cmd_error.split('\n'):
                 if len(line):
                   logger.error(line)
-            raise Exception(f"ERROR executing command: {' '.join(command)}")
+            raise Exception(f"Issue executing command: {' '.join(command)}")
         except Exception as e: raise
 
         if cmd_output:
@@ -259,7 +259,7 @@ class bob:
       for p in self._processes:
         p.terminate()
 
-    logger.error(f"ERROR build failed, terminated subprocess and program. {str(args.exc_value)}")
+    logger.error(f"Build failed, terminated subprocess and program. {str(args.exc_value)}")
 
   def _bar_thread(self):
     status = "BUILDING"
