@@ -30,7 +30,7 @@ license: MIT
   - log is a folder generated that contains all information logged from execution.
 
 ## Targets
-  - FMCOMMS2
+  - FMCOMMS2-3
     - zedboard
     - zc702
     - zc706
@@ -65,6 +65,8 @@ license: MIT
   - fusesoc (2.4 or greater)
   - gtkwave
   - Icarus
+  - arm-none-eabi-gcc (needed for bootgen, done by python script at end of HDL build)
+  - aarch64-linux-gnu-gcc  (needed for bootgen, done by python script at end of HDL build)
 
 ### Software
   - build-essentials
