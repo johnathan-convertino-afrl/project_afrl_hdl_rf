@@ -88,12 +88,19 @@ def main():
 
   print("Starting build system targets...\n")
 
+  bob = builder.bob("py/build_cmds.yml", yaml_data, args.target, args.dryrun)
+
   try:
-    builder.bob("py/build_cmds.yml", yaml_data, args.target, args.dryrun).run()
+    bob.run()
+  except KeyboardInterrupt:
+    bob.stop()
+    time.sleep(1)
+    print("\n" + f"Build interrupted with CTRL+C.")
+    exit(~0)
   except Exception as e:
     logger.error(str(e))
     time.sleep(1)
-    print("\n" +f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
+    print("\n" + f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)
 
   print("\n" + f"Completed build system targets, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")

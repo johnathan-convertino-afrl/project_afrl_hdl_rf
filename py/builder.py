@@ -61,6 +61,15 @@ class bob:
     self._items_done = 0
     self._project_name = "None"
 
+  def stop(self):
+    self._failed = True
+
+    if self._dryrun is False:
+      for p in self._processes:
+        p.terminate()
+
+    logger.info(f"Thread terminate sent to stop builders.")
+
   # run the steps to build parts of targets
   def run(self):
     try:
