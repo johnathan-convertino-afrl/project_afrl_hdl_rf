@@ -63,8 +63,8 @@ license: MIT
   - fusesoc (2.4 or greater)
   - gtkwave
   - Icarus
-  - arm-none-eabi-gcc (needed for bootgen, done by python script at end of HDL build)
-  - aarch64-linux-gnu-gcc  (needed for bootgen, done by python script at end of HDL build)
+  - arm-none-eabi-gcc version 11 (needed for bootgen, done by python script at end of HDL build)
+  - aarch64-linux-gnu-gcc  version 11 (needed for bootgen, done by python script at end of HDL build)
 
 ### Software
   - build-essentials
@@ -98,6 +98,7 @@ license: MIT
   - ld
   - as
   - gold
+  - mcopy
 
 ## Quick Start
   0. Clone this repo
