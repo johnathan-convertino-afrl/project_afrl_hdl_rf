@@ -237,6 +237,7 @@ class bob:
           raise Exception(f"RUN_TYPE {run_type} is not a valid selection")
 
       bar_thread.join()
+      print("")
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
