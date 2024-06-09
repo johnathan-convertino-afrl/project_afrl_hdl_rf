@@ -132,17 +132,3 @@ zcu102_fmcomms5_linux_busybox_sdcard:
       <<: *output_files_fmcomms5
     genimage:
       path: img_cfg
-# Possible future build, needs alot more testing
-a10soc_fmcomms5_linux_busybox_sdcard:
-  concurrent:
-    fusesoc:
-      <<: *fusesoc_fmcomms5
-      target: a10soc_bootgen
-    buildroot:
-      <<: *buildroot_fmcomms5
-      config: arria10_a10soc_ad_fmcomms5_defconfig
-  sequential:
-    script:
-      <<: *output_files_fmcomms5
-    genimage:
-      path: img_cfg
