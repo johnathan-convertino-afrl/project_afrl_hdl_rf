@@ -237,7 +237,6 @@ class bob:
           raise Exception(f"RUN_TYPE {run_type} is not a valid selection")
 
       bar_thread.join()
-      print("")
 
   def _subprocess(self, list_of_commands):
     for command in list_of_commands:
@@ -298,7 +297,7 @@ class bob:
 
   def _bar_thread(self):
     status = "BUILDING"
-    bar = progressbar.ProgressBar(widgets=[progressbar.Timer(format=' [%(elapsed)s] '), progressbar.Percentage(), " ", progressbar.GranularBar(markers=' ░▒▓█', left='|', right='| '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
+    bar = progressbar.ProgressBar(widgets=[progressbar.Timer(format=' [%(elapsed)s] '), progressbar.Percentage(), " ", progressbar.GranularBar(markers=' #', left='[', right='] '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
     bar.update(Status=f"{status:^8}")
 
