@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2021.2 (Released July 1, 2021) -->
+<HTML lang="en">
+<HEAD>
+<TITLE>Using SDCARD images</TITLE>
+<META NAME="description" CONTENT="Using SDCARD images">
+<META NAME="keywords" CONTENT="html">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021.2">
+
+<LINK REL="STYLESHEET" HREF="html.css">
+
+<LINK REL="previous" HREF="project_afrl_hdl_rf_node10.html">
+<LINK REL="next" HREF="project_afrl_hdl_rf_node16.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A
+ HREF="project_afrl_hdl_rf_node16.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node14.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html78"
+  HREF="project_afrl_hdl_rf_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="project_afrl_hdl_rf_node16.html">RF Systems</A>
+<B> Up:</B> <A
+ HREF="project_afrl_hdl_rf_node2.html">Usage</A>
+<B> Previous:</B> <A
+ HREF="project_afrl_hdl_rf_node14.html">sdcard</A>
+ &nbsp; <B>  <A ID="tex2html79"
+  HREF="project_afrl_hdl_rf_node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A ID="SECTION00027000000000000000">
+Using SDCARD images</A>
+</H2>
+
+<P>
+Pick the way you prefer to transfer your image. If you're going to use dd I recommend blanking the card first so old data is removed.
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+$ dd if=sdcard.img of=/dev/sde bs=512 status=progress
+</PRE>
+</TD></TR></TABLE>
+My prefered method is gnome-disk-utility.
+
+<OL>
+<LI>Open gnome-disk-utility
+</LI>
+<LI>Insert the sdcard into your reader.
+</LI>
+<LI>Select the destination device under Disks.
+</LI>
+<LI>In the right side hamburger menu click 'Restore Disk Image'.
+</LI>
+<LI>In the new windown, find your image. Once you've found it click start restoring.
+</LI>
+<LI>Confirm you want to restore the image.
+</LI>
+<LI>Input your password for sudo access.
+</LI>
+<LI>Wait for the image to be restored.
+</LI>
+<LI>Once it is complete, click the top 'Eject' button.
+</LI>
+<LI>Exit the application.
+</LI>
+<LI>Insert the sdcard in your target platform.
+</LI>
+<LI>Poweron and enjoy.
+</LI>
+</OL>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

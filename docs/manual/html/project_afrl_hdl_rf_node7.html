@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2021.2 (Released July 1, 2021) -->
+<HTML lang="en">
+<HEAD>
+<TITLE>System Builder</TITLE>
+<META NAME="description" CONTENT="System Builder">
+<META NAME="keywords" CONTENT="html">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021.2">
+
+<LINK REL="STYLESHEET" HREF="html.css">
+
+<LINK REL="next" HREF="project_afrl_hdl_rf_node10.html">
+<LINK REL="previous" HREF="project_afrl_hdl_rf_node6.html">
+<LINK REL="next" HREF="project_afrl_hdl_rf_node8.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A
+ HREF="project_afrl_hdl_rf_node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html56"
+  HREF="project_afrl_hdl_rf_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="project_afrl_hdl_rf_node8.html">build.yml</A>
+<B> Up:</B> <A
+ HREF="project_afrl_hdl_rf_node2.html">Usage</A>
+<B> Previous:</B> <A
+ HREF="project_afrl_hdl_rf_node6.html">Dependencies</A>
+ &nbsp; <B>  <A ID="tex2html57"
+  HREF="project_afrl_hdl_rf_node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A ID="SECTION00025000000000000000">
+System Builder</A>
+</H2>
+
+<P>
+The main python program in charge of building the targets is system_builder.py. This calls a library called builder and other libraries to carry out target generation.
+Targets are specified by receipes in the build.yml file. It will also pull all sup-repositories automatically. Dependcy checking is included, but this is very simple at this moment
+and uses the deps.txt file to parse command names and checks if they exist. It does not check versions. Each target will be built with its current status show in its own progress bar.
+This shows the time elapsed, percent complete, status, and name of current target being build.
+
+<P>
+What system_builder.py does exactly is to call other build systems. It essentially isn't made to replace things such as cmake, vivado, make, buildroot, etc. It is made
+to tie those together for a target in a receipe. This receipe tells system_builder how to create each piece, and what order to do it in. Each piece it calls is responsable for
+generating its output products using its original build system. New receipes for build methods can be added using a yaml file in the python directory. These are used to fill in how
+to use a build system and what to expect. This allows system_builder.py to be quickly updated with new tools for future targets for more interesting receipes.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A ID="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><UL>
+<LI><A ID="tex2html58"
+  HREF="project_afrl_hdl_rf_node8.html">build.yml</A>
+<LI><A ID="tex2html59"
+  HREF="project_afrl_hdl_rf_node9.html">deps.txt</A>
+</UL></UL>
+<!--End of Table of Child-Links-->
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A
+ HREF="project_afrl_hdl_rf_node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html56"
+  HREF="project_afrl_hdl_rf_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="project_afrl_hdl_rf_node8.html">build.yml</A>
+<B> Up:</B> <A
+ HREF="project_afrl_hdl_rf_node2.html">Usage</A>
+<B> Previous:</B> <A
+ HREF="project_afrl_hdl_rf_node6.html">Dependencies</A>
+ &nbsp; <B>  <A ID="tex2html57"
+  HREF="project_afrl_hdl_rf_node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

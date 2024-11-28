@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2021.2 (Released July 1, 2021) -->
+<HTML lang="en">
+<HEAD>
+<TITLE>Quick Start</TITLE>
+<META NAME="description" CONTENT="Quick Start">
+<META NAME="keywords" CONTENT="html">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021.2">
+
+<LINK REL="STYLESHEET" HREF="html.css">
+
+<LINK REL="next" HREF="project_afrl_hdl_rf_node5.html">
+<LINK REL="previous" HREF="project_afrl_hdl_rf_node3.html">
+<LINK REL="next" HREF="project_afrl_hdl_rf_node5.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A
+ HREF="project_afrl_hdl_rf_node5.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node3.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html50"
+  HREF="project_afrl_hdl_rf_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="project_afrl_hdl_rf_node5.html">Directory Guide</A>
+<B> Up:</B> <A
+ HREF="project_afrl_hdl_rf_node2.html">Usage</A>
+<B> Previous:</B> <A
+ HREF="project_afrl_hdl_rf_node3.html">Introduction</A>
+ &nbsp; <B>  <A ID="tex2html51"
+  HREF="project_afrl_hdl_rf_node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A ID="SECTION00022000000000000000">
+Quick Start</A>
+</H2>
+
+<OL>
+<LI>Clone this repo
+</LI>
+<LI>Install Requirements listed above.
+</LI>
+<LI>Make sure all requirements are accessable from the command line.
+</LI>
+<LI>execute: python system_builder.py to build all targets.
+</LI>
+</OL>
+
+<P>
+Each part of a target is stored in a directory the represents the part of it that needs to be created. FPGA source files are stored in hdl, sw has the software needed
+for the various baremetal or operating systems. System builder is given targets that choose the needed project files and sets up the software parameters needed for the build.
+This allows the same parts to be reused for different targets. FPGA images uses for both baremetal and Linux for example. All targets generate a log in the log folder.
+Without debug enabled this will only contain the commands executed during the build, a good place to find out how to do parts manually. The output folder will have
+the project build outputs, artifacts, binaries, and any images. These are seperated into folders that contain the name of the target that contains its information.
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

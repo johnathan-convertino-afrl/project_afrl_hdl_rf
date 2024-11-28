@@ -153,7 +153,9 @@ def submodule_init(repo):
   print("Checking for submodules...")
 
   for submodule in repo.submodules:
-    submodule.update(recursive=True)
+    submodule.update(init=True, recursive=True)
+    sub_repo = submodule.module()
+    sub_repo.git.reset(hard=True)
 
   print("Checking for submodules complete.")
 

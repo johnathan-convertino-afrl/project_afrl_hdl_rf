@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2021.2 (Released July 1, 2021) -->
+<HTML lang="en">
+<HEAD>
+<TITLE>build.yml</TITLE>
+<META NAME="description" CONTENT="build.yml">
+<META NAME="keywords" CONTENT="html">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021.2">
+
+<LINK REL="STYLESHEET" HREF="html.css">
+
+<LINK REL="next" HREF="project_afrl_hdl_rf_node9.html">
+<LINK REL="previous" HREF="project_afrl_hdl_rf_node7.html">
+<LINK REL="next" HREF="project_afrl_hdl_rf_node9.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A
+ HREF="project_afrl_hdl_rf_node9.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node7.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="project_afrl_hdl_rf_node7.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html60"
+  HREF="project_afrl_hdl_rf_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="project_afrl_hdl_rf_node9.html">deps.txt</A>
+<B> Up:</B> <A
+ HREF="project_afrl_hdl_rf_node7.html">System Builder</A>
+<B> Previous:</B> <A
+ HREF="project_afrl_hdl_rf_node7.html">System Builder</A>
+ &nbsp; <B>  <A ID="tex2html61"
+  HREF="project_afrl_hdl_rf_node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H4><A ID="SECTION00025010000000000000">
+build.yml</A>
+</H4> is the default yml target receipe file system builder looks for. This file specifies targets with parts (receipe) that contain commands for builds.
+These parts can be concurrent for multithreading, or sequenctial for one at a time. The order these are executed is from the top down. Meaning the
+top command will be executed before the one below it.
+
+<P>
+Sample build.yml
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+zed_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc: &amp;fusesoc_fmcomms2-3
+      path: hdl
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+    buildroot: &amp;buildroot_fmcomms2-3
+      path: sw/linux/buildroot-afrl
+      config: zynq_zed_ad_fmcomms2-3_defconfig
+  sequential:
+    script: &amp;output_files_fmcomms2-3
+      exec: python
+      file: py/output_gen.py
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
+    genimage:
+      path: img_cfg
+zc702_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      &lt;&lt;: *fusesoc_fmcomms2-3
+      target: zc702_bootgen
+    buildroot:
+      &lt;&lt;: *buildroot_fmcomms2-3
+      config: zynq_zc702_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      &lt;&lt;: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+</PRE>
+</TD></TR></TABLE>
+
+<P>
+System builder can be easily run by simply executing the following from the root of the AFRL HDL RF directory.
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+$ python3 system_builder.py
+</PRE>
+</TD></TR></TABLE>
+Which will build all targets listing in the build.yml file. The following are all the options available (&ndash;help will print this to the console).
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+--list_targets       List all targets.
+--list_commands      List all available yaml build commands.
+--list_deps          List all available dependencies.
+--clean              remove all generated outputs, including logs.
+--deps DEPS_FILE     Path to dependencies txt file, used to check if command
+                      line applications exist.
+--build CONFIG_FILE  Path to build configuration yaml file. build.yml is
+                      default.
+--target TARGET      Target name from list. None will build all targets by
+                      default.
+--debug              Turn on debug logging messages
+--dryrun             Run build without executing commands.
+--noupdate           Run build without updating submodules.
+--nodepcheck         Run build without checking dependencies.
+</PRE>
+</TD></TR></TABLE>
+For instance, if you would like to build a single target you can use the following.
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+$ python system_builder.py --target zed_fmcomms2-3_linux_busybox_sdcard
+</PRE>
+</TD></TR></TABLE>
+
+<P>
+After executing the build command you will see the following output to your console. This will inform you of how the build is going,
+what the build has done, and what targets have been built.
+
+<P>
+Successful build:
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+Checking for dependencies...
+Checking for dependencies complete.
+Checking for submodules...
+Checking for submodules complete.
+Starting build system targets...
+
+[0:13:23] 100% [################] Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
+[0:13:37] 100% [################] Status: SUCCESS  | Target: zc702_fmcomms2-3_linux_busybox_sdcard
+[0:13:38] 100% [################] Status: SUCCESS  | Target: zc706_fmcomms2-3_linux_busybox_sdcard
+
+Completed build system targets.
+</PRE>
+</TD></TR></TABLE>
+If the build fails, you will have the following.
+
+<P>
+Failed build:
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+Starting build system targets...
+
+ [0:26:36]  85% [#############...] Status:  ERROR   | Target: zcu102_fmcomms5_linux_busybox_sdcard
+
+ERROR: build system failure, see log file log/240513_1715617815.log.
+</PRE>
+</TD></TR></TABLE>
+Always check the log file listing to debug any error messages. Also using &ndash;dryrun with &ndash;debug can also speed up troubleshooting
+of bugs that are things such as bad paths or missing dependencies.
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

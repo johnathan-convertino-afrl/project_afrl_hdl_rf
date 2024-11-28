@@ -31,6 +31,4 @@ sdiff
 ld
 as
 gold
-arm-none-eabi-gcc
-aarch64-linux-gnu-gcc
 mcopy
