@@ -29,7 +29,7 @@
 \par
 AFRL HDL RF contains FPGA RF projects. The goal of this project is to have all RF projects in one place. On top of that this uses a build system
 to simplify all of the steps for generating the RF system into one step. These projects provide a base system that targets various RF frontends.
-Targets have the RF frontend built into the board, the fpga, or are a seperate development board added to the FPGA development board.
+Targets have the RF frontend built into the board, the fpga, or are a separate development board added to the FPGA development board.
 This project uses a python based build system to tie together image generation. Meaning that if you choose a target that FPGA image,
 the software (linux at the moment) are all built for the target. Then the results are put into a SDCARD image (future allow for other targets such as flash).
 This image can be written to an SDCARD using various utilities.
@@ -38,7 +38,7 @@ This image can be written to an SDCARD using various utilities.
 \begin{enumerate}
 \item Clone this repo
 \item Install Requirements listed above.
-\item Make sure all requirements are accessable from the command line.
+\item Make sure all requirements are accessible from the command line.
 \item execute: python system\_builder.py to build all targets.
 \end{enumerate}
 
@@ -47,7 +47,7 @@ Each part of a target is stored in a directory the represents the part of it tha
 for the various baremetal or operating systems. System builder is given targets that choose the needed project files and sets up the software parameters needed for the build.
 This allows the same parts to be reused for different targets. FPGA images uses for both baremetal and Linux for example. All targets generate a log in the log folder.
 Without debug enabled this will only contain the commands executed during the build, a good place to find out how to do parts manually. The output folder will have
-the project build outputs, artifacts, binaries, and any images. These are seperated into folders that contain the name of the target that contains its information.
+the project build outputs, artifacts, binaries, and any images. These are separated into folders that contain the name of the target that contains its information.
 
 \subsection{Directory Guide}
 
@@ -142,17 +142,17 @@ Below highlights important folders from the root of the directory. Output and lo
 
 \par
 The main python program in charge of building the targets is system\_builder.py. This calls a library called builder and other libraries to carry out target generation.
-Targets are specified by receipes in the build.yml file. It will also pull all sup-repositories automatically. Dependcy checking is included, but this is very simple at this moment
+Targets are specified by recipes in the build.yml file. It will also pull all sup-repositories automatically. Dependency checking is included, but this is very simple at this moment
 and uses the deps.txt file to parse command names and checks if they exist. It does not check versions. Each target will be built with its current status show in its own progress bar.
 This shows the time elapsed, percent complete, status, and name of current target being build.
 \par
 What system\_builder.py does exactly is to call other build systems. It essentially isn't made to replace things such as cmake, vivado, make, buildroot, etc. It is made
-to tie those together for a target in a receipe. This receipe tells system\_builder how to create each piece, and what order to do it in. Each piece it calls is responsable for
-generating its output products using its original build system. New receipes for build methods can be added using a yaml file in the python directory. These are used to fill in how
-to use a build system and what to expect. This allows system\_builder.py to be quickly updated with new tools for future targets for more interesting receipes.
+to tie those together for a target in a recipe. This receipe tells system\_builder how to create each piece, and what order to do it in. Each piece it calls is responsible for
+generating its output products using its original build system. New recipes for build methods can be added using a yaml file in the python directory. These are used to fill in how
+to use a build system and what to expect. This allows system\_builder.py to be quickly updated with new tools for future targets for more interesting recipes.
 
-\paragraph{build.yml} is the default yml target receipe file system builder looks for. This file specifies targets with parts (receipe) that contain commands for builds.
-These parts can be concurrent for multithreading, or sequenctial for one at a time. The order these are executed is from the top down. Meaning the
+\paragraph{build.yml} is the default yml target recipe file system builder looks for. This file specifies targets with parts (receipe) that contain commands for builds.
+These parts can be concurrent for multithreading, or sequential for one at a time. The order these are executed is from the top down. Meaning the
 top command will be executed before the one below it.
 
 Sample build.yml
@@ -277,7 +277,7 @@ The output folder contains four folders.
 \item sdcard
 \end{enumerate}
 
-\paragraph{Genimage} contains temperary files for the genimage utility. Each target is listed by its name in the tmp folder contained within.
+\paragraph{Genimage} contains temporary files for the genimage utility. Each target is listed by its name in the tmp folder contained within.
 
 \paragraph{hdl} is the destination for the fusesoc build output. Each folder contained within is named after the target from system builder.
 Within that is the project files for the tool used to build the FPGA image. If you need to alter the FPGA base image this is the place to start.
@@ -295,20 +295,20 @@ Pick the way you prefer to transfer your image. If you're going to use dd I reco
 \begin{lstlisting}[language=bash]
 $ dd if=sdcard.img of=/dev/sde bs=512 status=progress
 \end{lstlisting}
-My prefered method is gnome-disk-utility.
+My preferred method is gnome-disk-utility.
 \begin{enumerate}
 \item Open gnome-disk-utility
 \item Insert the sdcard into your reader.
 \item Select the destination device under Disks.
 \item In the right side hamburger menu click 'Restore Disk Image'.
-\item In the new windown, find your image. Once you've found it click start restoring.
+\item In the new window, find your image. Once you've found it click start restoring.
 \item Confirm you want to restore the image.
 \item Input your password for sudo access.
 \item Wait for the image to be restored.
 \item Once it is complete, click the top 'Eject' button.
 \item Exit the application.
 \item Insert the sdcard in your target platform.
-\item Poweron and enjoy.
+\item Power on and enjoy.
 \end{enumerate}
 
 \section{RF Systems}
@@ -321,7 +321,7 @@ These systems are based on various open source projects.
 
 \par
 The FMCOMMS2-3 is a Analog Devices FMC development board for VHF and UHF ranges. This project uses the Analog
-Devices HDL base project for the FPGA. This base has customizations by AFRL for the Arria10 based targets. These
+Devices HDL base project for the FPGA. This base has customisation's by AFRL for the Arria10 based targets. These
 targets do not exist in the original. It also fixes a few bugs and makes the data path for RX/TX a mirror image of
 each other.
 
