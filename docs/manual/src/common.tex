@@ -82,9 +82,10 @@ Below highlights important folders from the root of the directory. Output and lo
 \subsection{Dependencies}
 
 \begin{itemize}
-\item system\_build.py
+\item creator.py
   \begin{itemize}
   \item gitpython
+  \item system\_builder
   \item progressbar2
   \end{itemize}
 \item OS
@@ -141,21 +142,21 @@ Below highlights important folders from the root of the directory. Output and lo
 \subsection{System Builder}
 
 \par
-The main python program in charge of building the targets is system\_builder.py. This calls a library called builder and other libraries to carry out target generation.
-Targets are specified by recipes in the build.yml file. It will also pull all sup-repositories automatically. Dependency checking is included, but this is very simple at this moment
+The main python program in charge of building the targets is creator.py. This calls a library called system\_builder and other libraries to carry out target generation.
+Target Projects are specified by recipes in the projects.yml file. It will also pull all sup-repositories automatically. Dependency checking is included, but this is very simple at this moment
 and uses the deps.txt file to parse command names and checks if they exist. It does not check versions. Each target will be built with its current status show in its own progress bar.
-This shows the time elapsed, percent complete, status, and name of current target being build.
+This shows the time elapsed, percent complete, status, and name of current target being built.
 \par
-What system\_builder.py does exactly is to call other build systems. It essentially isn't made to replace things such as cmake, vivado, make, buildroot, etc. It is made
-to tie those together for a target in a recipe. This receipe tells system\_builder how to create each piece, and what order to do it in. Each piece it calls is responsible for
+What creator.py does exactly is to call other build systems. It essentially isn't made to replace things such as cmake, vivado, make, buildroot, etc. It is made
+to tie those together for a target in a recipe. This receipe tells system\_builder library how to create each piece, and what order to do it in. Each piece it calls is responsible for
 generating its output products using its original build system. New recipes for build methods can be added using a yaml file in the python directory. These are used to fill in how
-to use a build system and what to expect. This allows system\_builder.py to be quickly updated with new tools for future targets for more interesting recipes.
+to use a build system and what to expect. This allows creator.py to be quickly updated with new tools for future targets for more interesting recipes.
 
-\paragraph{build.yml} is the default yml target recipe file system builder looks for. This file specifies targets with parts (receipe) that contain commands for builds.
+\paragraph{commands.yml} is the default yml target projects recipe file creator looks for. This file specifies targets with parts (receipe) that contain commands for builds.
 These parts can be concurrent for multithreading, or sequential for one at a time. The order these are executed is from the top down. Meaning the
 top command will be executed before the one below it.
 
-Sample build.yml
+Sample projects.yml
 \begin{lstlisting}[language={}]
 zed_fmcomms2-3_linux_busybox_sdcard:
   concurrent:
@@ -189,30 +190,29 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
 \end{lstlisting}
 
 \par
-System builder can be easily run by simply executing the following from the root of the AFRL HDL RF directory.
+Creator can run system builder easily by simply executing the following from the root of the AFRL HDL RF directory.
 \begin{lstlisting}[language=bash]
-$ python3 system_builder.py
+$ python3 creator.py
 \end{lstlisting}
-Which will build all targets listing in the build.yml file. The following are all the options available (\textendash help will print this to the console).
+The following are all the options available (\textendash help will print this to the console).
 \begin{lstlisting}[language={}]
---list_targets       List all targets.
---list_commands      List all available yaml build commands.
---list_deps          List all available dependencies.
---clean              remove all generated outputs, including logs.
---deps DEPS_FILE     Path to dependencies txt file, used to check if command
-                      line applications exist.
---build CONFIG_FILE  Path to build configuration yaml file. build.yml is
-                      default.
---target TARGET      Target name from list. None will build all targets by
-                      default.
---debug              Turn on debug logging messages
---dryrun             Run build without executing commands.
---noupdate           Run build without updating submodules.
---nodepcheck         Run build without checking dependencies.
+  -h, --help            show this help message and exit
+  --list_targets        List all targets.
+  --list_commands       List all available yaml build commands.
+  --list_deps           List all available dependencies.
+  --clean               remove all generated outputs, including logs.
+  --deps DEPS_FILE      Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.
+  --projects PROJ_FILE  Path to project configuration yaml file. project.yml is the default.
+  --commands CMDS_FILE  Path to the commands configuration yaml file. commands.yml is the default
+  --target TARGET       Target name from list. None will build all targets by default.
+  --debug               Turn on debug logging messages
+  --dryrun              Run build without executing commands.
+  --noupdate            Run build without updating submodules.
+  --nodepcheck          Run build without checking dependencies.
 \end{lstlisting}
 For instance, if you would like to build a single target you can use the following.
 \begin{lstlisting}[language=bash]
-$ python system_builder.py --target zed_fmcomms2-3_linux_busybox_sdcard
+$ python creator.py --target zed_fmcomms2-3_linux_busybox_sdcard
 \end{lstlisting}
 
 \par
@@ -226,6 +226,7 @@ Checking for dependencies...
 Checking for dependencies complete.
 Checking for submodules...
 Checking for submodules complete.
+Compiling Build System Targets...
 Starting build system targets...
 
 [0:13:23] 100% [################] Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard

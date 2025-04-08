@@ -21,4 +21,4 @@ $(LAT_PDF_PDF): $(LAT_PDF_SRC) $(LAT_COM_SRC)
 	rm $(AUX) $(LOG) $(TOC) $(OUT) $(LAT_COM_AUX)
 
 clean:
-	rm -rf *.pdf
+	rm -rf *.pdf $(AUX) $(LOG) $(TOC) $(OUT) $(LAT_COM_AUX)

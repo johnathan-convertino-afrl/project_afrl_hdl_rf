@@ -1,17 +1,13 @@
 <!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2021.2 (Released July 1, 2021) -->
+<!--Converted with LaTeX2HTML 2024 (Released January 1, 2024) -->
 <HTML lang="en">
 <HEAD>
-<TITLE>build.yml</TITLE>
-<META NAME="description" CONTENT="build.yml">
-<META NAME="keywords" CONTENT="html">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>commands.yml</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2024">
 
 <LINK REL="STYLESHEET" HREF="html.css">
 
@@ -49,13 +45,13 @@
 <!--End of Navigation Panel-->
 
 <H4><A ID="SECTION00025010000000000000">
-build.yml</A>
-</H4> is the default yml target recipe file system builder looks for. This file specifies targets with parts (receipe) that contain commands for builds.
+commands.yml</A>
+</H4> is the default yml target projects recipe file creator looks for. This file specifies targets with parts (receipe) that contain commands for builds.
 These parts can be concurrent for multithreading, or sequential for one at a time. The order these are executed is from the top down. Meaning the
 top command will be executed before the one below it.
 
 <P>
-Sample build.yml
+Sample projects.yml
 <TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
 <PRE>
 zed_fmcomms2-3_linux_busybox_sdcard:
@@ -91,35 +87,34 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
 </TD></TR></TABLE>
 
 <P>
-System builder can be easily run by simply executing the following from the root of the AFRL HDL RF directory.
+Creator can run system builder easily by simply executing the following from the root of the AFRL HDL RF directory.
 <TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
 <PRE>
-$ python3 system_builder.py
+$ python3 creator.py
 </PRE>
 </TD></TR></TABLE>
-Which will build all targets listing in the build.yml file. The following are all the options available (&ndash;help will print this to the console).
+The following are all the options available (&ndash;help will print this to the console).
 <TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
 <PRE>
---list_targets       List all targets.
---list_commands      List all available yaml build commands.
---list_deps          List all available dependencies.
---clean              remove all generated outputs, including logs.
---deps DEPS_FILE     Path to dependencies txt file, used to check if command
-                      line applications exist.
---build CONFIG_FILE  Path to build configuration yaml file. build.yml is
-                      default.
---target TARGET      Target name from list. None will build all targets by
-                      default.
---debug              Turn on debug logging messages
---dryrun             Run build without executing commands.
---noupdate           Run build without updating submodules.
---nodepcheck         Run build without checking dependencies.
+  -h, --help            show this help message and exit
+  --list_targets        List all targets.
+  --list_commands       List all available yaml build commands.
+  --list_deps           List all available dependencies.
+  --clean               remove all generated outputs, including logs.
+  --deps DEPS_FILE      Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.
+  --projects PROJ_FILE  Path to project configuration yaml file. project.yml is the default.
+  --commands CMDS_FILE  Path to the commands configuration yaml file. commands.yml is the default
+  --target TARGET       Target name from list. None will build all targets by default.
+  --debug               Turn on debug logging messages
+  --dryrun              Run build without executing commands.
+  --noupdate            Run build without updating submodules.
+  --nodepcheck          Run build without checking dependencies.
 </PRE>
 </TD></TR></TABLE>
 For instance, if you would like to build a single target you can use the following.
 <TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
 <PRE>
-$ python system_builder.py --target zed_fmcomms2-3_linux_busybox_sdcard
+$ python creator.py --target zed_fmcomms2-3_linux_busybox_sdcard
 </PRE>
 </TD></TR></TABLE>
 
@@ -135,6 +130,7 @@ Checking for dependencies...
 Checking for dependencies complete.
 Checking for submodules...
 Checking for submodules complete.
+Compiling Build System Targets...
 Starting build system targets...
 
 [0:13:23] 100% [################] Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
