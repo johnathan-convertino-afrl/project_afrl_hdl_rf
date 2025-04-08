@@ -1,12 +1,15 @@
-#!/usr/bin/env python3
-################################################################################
-# @file   system_builder.py
-# @author Jay Convertino(johnathan.convertino.1@us.af.mil)
-# @date   2024.04.17
-# @brief  Build various projects using builder object to parse and execute parts
+#*******************************************************************************
+# file:    creator.py
+#
+# author:  JAY CONVERTINO
+#
+# date:    2025/03/08
+#
+# about:   Brief
+# Example program for using system.builder library.
 #
 # @license MIT
-# Copyright 2024 Jay Convertino
+# Copyright 2025 Jay Convertino
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -25,7 +28,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-################################################################################
+#*******************************************************************************
 
 import yaml
 import subprocess
@@ -46,12 +49,18 @@ except ImportError:
   print("REQUIREMENT MISSING: gitpython, pip install gitpython")
   exit(0)
 
-sys.path.append("./py/")
+try:
+    from system.builder import *
+except ImportError as e:
+    import sys
+    sys.path.append("../")
+    from system.builder import *
+
+sys.path.append("../")
 
 sys.dont_write_bytecode = True
 
-import builder
-
+# Function: main
 # main execution function
 def main():
   args = parse_args(sys.argv[1:])
@@ -64,16 +73,13 @@ def main():
 
   logger_setup(args.debug)
 
-  yaml_data = open_yaml(args.config_file)
-
-  if yaml_data is None:
-    exit(~0)
+  cmd_compiler = commandCompiler(args.proj_file, args.cmds_file, args.target)
 
   if args.list_cmds:
-    exit(builder.bob("py/build_cmds.yml", yaml_data).list())
+    exit(cmd_compiler.listCommands())
 
   if args.list_all:
-    exit(list_projects(yaml_data, args.config_file))
+    exit(cmd_compiler.listProjects())
 
   if args.nodepcheck is False:
     try:
@@ -86,19 +92,30 @@ def main():
   if args.noupdate is False:
     submodule_init(os.getcwd())
 
-  print("Starting build system targets...\n")
-
-  bob = builder.bob("py/build_cmds.yml", yaml_data, args.target, args.dryrun)
+  print("Compiling Project Targets...\n")
 
   try:
-    bob.run()
+    cmd_compiler.create()
+  except Exception as e:
+    time.sleep(1)
+    print(str(e))
+    print("\n" + f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
+    exit(~0)
+
+  projects = cmd_compiler.getResult()
+
+  print("Starting build system targets...\n")
+
+  cmd_exec = commandExecutor(projects, args.dryrun)
+
+  try:
+    cmd_exec.runProject()
   except KeyboardInterrupt:
-    bob.stop()
+    cmd_exec.stop()
     time.sleep(1)
     print("\n" + f"Build interrupted with CTRL+C.")
     exit(~0)
   except Exception as e:
-    logger.error(str(e))
     time.sleep(1)
     print("\n" + f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)
@@ -107,6 +124,8 @@ def main():
 
   exit(0)
 
+# Function: list_deps
+# open deps text file and print all executable names.
 def list_deps(deps_file):
   try:
     deps = open(deps_file, 'r')
@@ -124,7 +143,8 @@ def list_deps(deps_file):
 
   return 0
 
-#check each line of txt file programs
+# Function: deps_check
+# Check each line of txt file programs
 def deps_check(deps_file):
   try:
     deps = open(deps_file, 'r')
@@ -146,16 +166,15 @@ def deps_check(deps_file):
 
   print("Checking for dependencies complete.")
 
-# make sure submodules have been pulled. If not, pull them.
+# Function: submodule_init
+# Make sure submodules have been pulled. If not, pull them.
 def submodule_init(repo):
   repo = git.Repo(repo)
 
   print("Checking for submodules...")
 
   for submodule in repo.submodules:
-    submodule.update(init=True, recursive=True)
-    sub_repo = submodule.module()
-    sub_repo.git.reset(hard=True)
+    submodule.update(init=True, force=True, recursive=True, keep_going=True)
 
   print("Checking for submodules complete.")
 
@@ -166,39 +185,7 @@ def submodule_init(repo):
     # if len(submodule.children()):
     #   submodule_init(submodule)
 
-# open the yaml file for processing
-def open_yaml(file_name):
-  try:
-    stream = open(file_name, 'r')
-  except:
-    print(file_name + " not available.")
-    return None
-
-  try:
-    yaml_data = yaml.safe_load(stream)
-  except yaml.YAMLError as e:
-    logger.error("yaml issue")
-    for line in str(e).split("\n"):
-      logger.error(line)
-    print("ERROR: check log for yaml parse error.")
-    stream.close()
-    return None
-
-  stream.close()
-  return yaml_data
-
-# List projects from the yaml file.
-def list_projects(yaml, file_name):
-  if not len(yaml):
-    return ~0
-
-  print('\n' + f"SYSTEM BUILDER TARGETS FROM {file_name.upper()}" + '\n')
-
-  for target, value in yaml.items():
-    print(f"TARGET: {target}")
-
-  return 0
-
+# Function: clean
 # Clean up folders used for output (output and log)
 def clean():
   print("********************************")
@@ -222,7 +209,8 @@ def clean():
 
   return 0
 
-# parse args for tuning build
+# Function: parse_args
+# Parse args for tuning build
 def parse_args(argv):
   parser = argparse.ArgumentParser(description='Automate projects build using yaml target list.')
 
@@ -233,17 +221,19 @@ def parse_args(argv):
   group.add_argument('--list_deps',       action='store_true',  default=False,        dest='list_deps',   required=False, help='List all available dependencies.')
   group.add_argument('--clean',           action='store_true',  default=False,        dest='clean',       required=False, help='remove all generated outputs, including logs.')
 
-  parser.add_argument('--deps',       action='store',       default="deps.txt",   dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.')
-  parser.add_argument('--build',      action='store',       default="build.yml",  dest='config_file', required=False, help='Path to build configuration yaml file. build.yml is the default.')
-  parser.add_argument('--target',     action='store',       default=None,         dest='target',      required=False, help='Target name from list. None will build all targets by default.')
-  parser.add_argument('--debug',      action='store_true',  default=False,        dest='debug',       required=False, help='Turn on debug logging messages')
-  parser.add_argument('--dryrun',     action='store_true',  default=False,        dest='dryrun',      required=False, help='Run build without executing commands.')
-  parser.add_argument('--noupdate',   action='store_true',  default=False,        dest='noupdate',    required=False, help='Run build without updating submodules.')
-  parser.add_argument('--nodepcheck', action='store_true',  default=False,        dest='nodepcheck',  required=False, help='Run build without checking dependencies.')
+  parser.add_argument('--deps',       action='store',       default="deps.txt",       dest='deps_file',   required=False, help='Path to dependencies txt file, used to check if command line applications exist. deps.txt is the default.')
+  parser.add_argument('--projects',   action='store',       default="projects.yml",   dest='proj_file',   required=False, help='Path to project configuration yaml file. project.yml is the default.')
+  parser.add_argument('--commands',   action='store',       default="commands.yml",   dest='cmds_file',   required=False, help='Path to the commands configuration yaml file. commands.yml is the default')
+  parser.add_argument('--target',     action='store',       default=None,             dest='target',      required=False, help='Target name from list. None will build all targets by default.')
+  parser.add_argument('--debug',      action='store_true',  default=False,            dest='debug',       required=False, help='Turn on debug logging messages')
+  parser.add_argument('--dryrun',     action='store_true',  default=False,            dest='dryrun',      required=False, help='Run build without executing commands.')
+  parser.add_argument('--noupdate',   action='store_true',  default=False,            dest='noupdate',    required=False, help='Run build without updating submodules.')
+  parser.add_argument('--nodepcheck', action='store_true',  default=False,            dest='nodepcheck',  required=False, help='Run build without checking dependencies.')
 
   return parser.parse_args()
 
-# setup logger for log file
+# Function: logger_setup
+# Setup logger for log file
 def logger_setup(debug):
   log_name = time.strftime("log/" + "%y%m%d", time.localtime()) + '_' +  str(int(time.mktime(time.localtime()))) + '.log'
 
@@ -267,6 +257,6 @@ def logger_setup(debug):
   logger.addHandler(log_file)
 
 
-# name is main is main
+# name of main is main
 if __name__=="__main__":
   main()
