@@ -13,3 +13,18 @@
 [submodule "hdl/projects/fmcomms2-3"]
 	path = hdl/projects/fmcomms2-3
 	url = https://github.com/johnathan-convertino-afrl/fmcomms2-3.git
+[submodule "hdl/util/util_fpga_binary_gen"]
+	path = hdl/util/util_fpga_binary_gen
+	url = https://github.com/johnathan-convertino-afrl/util_fpga_binary_gen.git
+[submodule "hdl/util/util_generators"]
+	path = hdl/util/util_generators
+	url = https://github.com/johnathan-convertino-afrl/util_generators.git
+[submodule "hdl/util/util_board"]
+	path = hdl/util/util_board
+	url = https://github.com/johnathan-convertino-afrl/util_board.git
+[submodule "hdl/util/util_tcl"]
+	path = hdl/util/util_tcl
+	url = https://github.com/johnathan-convertino-afrl/util_tcl.git
+[submodule "hdl/sim/util_sim_helper"]
+	path = hdl/sim/util_sim_helper
+	url = https://github.com/johnathan-convertino-afrl/util_sim_helper.git
