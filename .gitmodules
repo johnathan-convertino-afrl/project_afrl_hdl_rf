@@ -7,12 +7,6 @@
 [submodule "hdl/ip/zipcpu_wb2axip"]
 	path = hdl/ip/zipcpu_wb2axip
 	url = https://github.com/johnathan-convertino-afrl/zipcpu_wb2axip_fusesoc.git
-[submodule "hdl/util"]
-	path = hdl/util
-	url = https://github.com/johnathan-convertino-afrl/UTIL.git
-[submodule "hdl/sim"]
-	path = hdl/sim
-	url = https://github.com/johnathan-convertino-afrl/SIM.git
 [submodule "sw/linux/buildroot-afrl"]
 	path = sw/linux/buildroot-afrl
 	url = https://github.com/johnathan-convertino-afrl/buildroot-afrl.git

@@ -20,7 +20,7 @@ script:
 gcc_riscv32:
   cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/riscv/bin/riscv32-unknown-elf-gcc"]
   cmd_1: ["make", "-C", "{_pwd}/{path}", "clean"]
-  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi-ilp32"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi=ilp32"]
   cmd_3: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
 openocd_riscv:
   cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/openocd/bin/openocd"]
