@@ -32,3 +32,5 @@ ld
 as
 gold
 mcopy
+bison
+flex
