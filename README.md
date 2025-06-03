@@ -48,6 +48,9 @@ license: MIT
     - zcu102
     - a10soc
     - hanpilot
+    
+  - Unified ad936x
+    - adrv9361-z7035
 
   - FMCOMMS5
     - zc702
