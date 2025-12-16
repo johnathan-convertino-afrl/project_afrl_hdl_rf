@@ -4,9 +4,6 @@
 [submodule "hdl/ip/ad"]
 	path = hdl/ip/ad
 	url = https://github.com/johnathan-convertino-afrl/ad_hdl_fusesoc.git
-[submodule "hdl/ip/zipcpu_wb2axip"]
-	path = hdl/ip/zipcpu_wb2axip
-	url = https://github.com/johnathan-convertino-afrl/zipcpu_wb2axip_fusesoc.git
 [submodule "sw/linux/buildroot-afrl"]
 	path = sw/linux/buildroot-afrl
 	url = https://github.com/johnathan-convertino-afrl/buildroot-afrl.git
@@ -31,3 +28,18 @@
 [submodule "hdl/projects/unified_ad936x"]
 	path = hdl/projects/unified_ad936x
 	url = git@github.com:johnathan-convertino-afrl/unified_ad936x.git
+[submodule "hdl/ip/axi_lite_otm"]
+	path = hdl/ip/axi_lite_otm
+	url = https://github.com/johnathan-convertino-afrl/axi_lite_otm.git
+[submodule "hdl/ip/axi_lite_read_channel_decoder"]
+	path = hdl/ip/axi_lite_read_channel_decoder
+	url = https://github.com/johnathan-convertino-afrl/axi_lite_read_channel_decoder.git
+[submodule "hdl/ip/axi_lite_write_channel_decoder"]
+	path = hdl/ip/axi_lite_write_channel_decoder
+	url = https://github.com/johnathan-convertino-afrl/axi_lite_write_channel_decoder.git
+[submodule "hdl/ip/bus_addr_decoder"]
+	path = hdl/ip/bus_addr_decoder
+	url = https://github.com/johnathan-convertino-afrl/bus_addr_decoder.git
+[submodule "hdl/ip/holdbuffer"]
+	path = hdl/ip/holdbuffer
+	url = https://github.com/johnathan-convertino-afrl/holdbuffer.git
