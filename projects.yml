@@ -98,7 +98,7 @@ adrv9361-z7035_unified_ad936x_linux_busybox_sdcard:
       target: adrv9361-z7035_fmc_bootgen
     buildroot: &buildroot_unified_ad936x
       path: sw/linux/buildroot-afrl
-      config: afrl_zynq-adrv9361-z7035-fmc-min_defconfig
+      config: afrl_zynq_adrv9361_z7035-fmc_min_defconfig
   sequential:
     script: &output_files_unified_ad936x
       exec: python
