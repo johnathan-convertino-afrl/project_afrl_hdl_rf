@@ -43,3 +43,6 @@
 [submodule "hdl/ip/holdbuffer"]
 	path = hdl/ip/holdbuffer
 	url = https://github.com/johnathan-convertino-afrl/holdbuffer.git
+[submodule "hdl/util/util_helper"]
+	path = hdl/util/util_helper
+	url = https://github.com/johnathan-convertino-afrl/util_helper.git
