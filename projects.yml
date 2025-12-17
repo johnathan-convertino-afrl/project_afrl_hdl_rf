@@ -16,7 +16,7 @@ zed_fmcomms2-3_linux_busybox_sdcard:
       target: zed_bootgen
     buildroot: &buildroot_fmcomms2-3
       path: sw/linux/buildroot-afrl
-      config: zynq_zed_ad_fmcomms2-3_defconfig
+      config: afrl_zynq_zed_ad_fmcomms2-3_defconfig
   sequential:
     script: &output_files_fmcomms2-3
       exec: python
@@ -31,7 +31,7 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
       target: zc702_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: zynq_zc702_ad_fmcomms2-3_defconfig
+      config: afrl_zynq_zc702_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -44,7 +44,7 @@ zc706_fmcomms2-3_linux_busybox_sdcard:
       target: zc706_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: zynq_zc706_ad_fmcomms2-3_defconfig
+      config: afrl_zynq_zc706_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -57,7 +57,7 @@ zcu102_fmcomms2-3_linux_busybox_sdcard:
       target: zcu102_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: zynqmp_zcu102_ad_fmcomms2-3_defconfig
+      config: afrl_zynqmp_zcu102_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -70,7 +70,7 @@ a10soc_fmcomms2-3_linux_busybox_sdcard:
       target: a10soc_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: arria10_a10soc_ad_fmcomms2-3_defconfig
+      config: afrl_arria10_a10soc_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -83,7 +83,7 @@ hanpilot_fmcomms2-3_linux_busybox_sdcard:
       target: hanpilot_bootgen
     buildroot:
       <<: *buildroot_fmcomms2-3
-      config: arria10_hanpilot_ad_fmcomms2-3_defconfig
+      config: afrl_arria10_hanpilot_ad_fmcomms2-3_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms2-3
@@ -98,7 +98,7 @@ adrv9361-z7035_unified_ad936x_linux_busybox_sdcard:
       target: adrv9361-z7035_fmc_bootgen
     buildroot: &buildroot_unified_ad936x
       path: sw/linux/buildroot-afrl
-      config: zynq-adrv9361-z7035-fmc-min_defconfig
+      config: afrl_zynq-adrv9361-z7035-fmc-min_defconfig
   sequential:
     script: &output_files_unified_ad936x
       exec: python
@@ -115,7 +115,7 @@ zc702_fmcomms5_linux_busybox_sdcard:
       target: zc702_bootgen
     buildroot: &buildroot_fmcomms5
       path: sw/linux/buildroot-afrl
-      config: zynq_zc702_ad_fmcomms5_defconfig
+      config: afrl_zynq_zc702_ad_fmcomms5_defconfig
   sequential:
     script: &output_files_fmcomms5
       exec: python
@@ -130,7 +130,7 @@ zc706_fmcomms5_linux_busybox_sdcard:
       target: zc706_bootgen
     buildroot:
       <<: *buildroot_fmcomms5
-      config: zynq_zc706_ad_fmcomms5_defconfig
+      config: afrl_zynq_zc706_ad_fmcomms5_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms5
@@ -143,7 +143,7 @@ zcu102_fmcomms5_linux_busybox_sdcard:
       target: zcu102_bootgen
     buildroot:
       <<: *buildroot_fmcomms5
-      config: zynqmp_zcu102_ad_fmcomms5_defconfig
+      config: afrl_zynqmp_zcu102_ad_fmcomms5_defconfig
   sequential:
     script:
       <<: *output_files_fmcomms5
